@@ -73,7 +73,8 @@ $route['bookmarks'] 				= 'C_bookmarks';
 $route['contribution'] 				= 'C_contribution';
 // Report
 $route['report'] 					= 'C_report';
-$route['employee'] = 'C_employee';
+$route['employee'] 					= 'C_employee';
+$route['employee-level/(:any)']		= 'C_employee/level/$1';
 
 $route['404_override'] 				= '';
 $route['translate_uri_dashes'] 		= FALSE;
