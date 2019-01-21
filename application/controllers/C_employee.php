@@ -8,5 +8,10 @@ class C_employee extends CI_Controller {
  function index() {
     $data['employee'] = $this->M_employee->getEmployee();
     $this->load->view('V_employee', $data);
- } 
+ }
+ public function level($level)
+ {
+ 	$data['employee'] = $this->M_employee->getEmployeeLevel($level);
+    $this->load->view('V_employee', $data);
+ }
 }

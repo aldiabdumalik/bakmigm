@@ -12,4 +12,14 @@ class M_employee extends CI_Model {
         $employee = $db->query('exec USEREDOC');
         return $employee->result_array();
     }
+    public function getEmployeeLevel($level)
+    {
+        $db = $this->load->database('sql_server', TRUE);
+        if(!$db) {
+          echo "Not connected";
+          die;
+        }
+        $employee = $db->query('SELECT * FROM USEREDOC WHERE JOBLVL LIKE "'.$level.'" ');
+        return $employee->result_array();
+    }
 }
