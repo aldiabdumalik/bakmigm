@@ -52,7 +52,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	<![endif]-->
 </head>
 <!------------------------------------------------------------------------------------------------->
-<body class="login-layout">
+<body class="login-layout" style="background-color: #ED9843;">
 	<!------------------------------------------------------------------------------------------------->
 	<!-- CONTENT -->
 	<div class="main-container">
@@ -62,7 +62,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 					<div class="login-container">
 					
 						<div class="position-relative">
-							<div id="login-box" class="login-box visible widget-box no-border">
+							<!-- <br/><br/><br/><br/><br/> -->
+							<div id="login-box" class="login-box visible widget-box no-border" style="margin-top: 100px;">
 								<div class="widget-body">
 									<div class="widget-main">
 										<img class="nav-user-photo" src="<?php echo base_url('template/backend/assets/images/avatars/logo_big.png'); ?>"/>

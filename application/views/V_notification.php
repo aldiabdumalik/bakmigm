@@ -148,11 +148,17 @@ input[readonly] {
 .alert {
   margin-bottom : 3px !important;
 }
+.modal-dialog1 {
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin:0;
+}
 </style>
 </head>
 <!------------------------------------------------------------------------------------------------->
 <body class="no-skin">
-	<div id="navbar" class="navbar navbar-default ace-save-state">
+	<div id="navbar" class="navbar navbar-default ace-save-state navbar-fixed-top">
 		<div class="navbar-container ace-save-state" id="navbar-container">
 			<button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
 				<span class="sr-only">Toggle sidebar</span>
@@ -180,7 +186,7 @@ input[readonly] {
 			try{ace.settings.loadState('main-container')}catch(e){}
 		</script>
 
-		<div id="sidebar" class="sidebar responsive ace-save-state">
+		<div id="sidebar" class="sidebar responsive ace-save-state sidebar-fixed">
 			<script type="text/javascript">
 				try{ace.settings.loadState('sidebar')}catch(e){}
 			</script>
@@ -361,15 +367,18 @@ input[readonly] {
 										<br/>
 										<?php echo date('d/m/Y G:i', strtotime($data_row_ext->DOC_DATE));?> WIB
 									</div>
-									<div class="col-xs-2">
+									<div class="col-xs-2" style="text-align:right;">
+										<a data-toggle="modal" data-target="#modal-preview<?=$data_row_ext->DOC_ID;?>" class="ace-icon fa fa-eye btn btn-sm btn-warning" data-popup="tooltip" data-placement="top" title="Preview"></a>
+									</div>
+									<!-- <div class="col-xs-2">
 										<form id="form_approve[]" name="form_approve[]" action="<?php echo base_url('C_notification/approve'); ?>" method="post" enctype="multipart/form-data">
 										<input type="hidden" id="si_key[]" name="si_key[]" value="<?php echo $data_row_ext->DOC_ID; ?>" class="form-control" required/>
 										<input type="hidden" id="si_approver" name="si_approver" class="form-control" value="<?=$SESSION_ROLES;?>">
 										<button type="submit" class="ace-icon fa fa-check btn btn-sm btn-primary"></button>
 										<a data-toggle="modal" data-target="#modal-reject<?=$data_row_ext->DOC_ID;?>" class="ace-icon fa fa-ban btn btn-sm btn-danger" data-popup="tooltip" data-placement="top" title="Reject"></a>
 										<a data-toggle="modal" data-target="#modal-preview<?=$data_row_ext->DOC_ID;?>" class="ace-icon fa fa-eye btn btn-sm btn-warning" data-popup="tooltip" data-placement="top" title="Preview"></a>
-									</form>
-									</div>
+										</form>
+									</div> -->
 								</div>
 							</div>
 						<?php elseif ($SESSION_ROLES=="PENDISTRIBUSI" && $FILTER=="MENUNGGU ATASAN PENCIPTA"): ?>
@@ -380,7 +389,7 @@ input[readonly] {
 										<br/>
 										<?php echo date('d/m/Y G:i', strtotime($data_row_ext->DOC_DATE));?> WIB
 									</div>
-									<div class="col-xs-2">
+									<div class="col-xs-2" style="text-align:right;">
 										<a data-toggle="modal" data-target="#modal-preview<?=$data_row_ext->DOC_ID;?>" class="ace-icon fa fa-eye btn btn-sm btn-warning" data-popup="tooltip" data-placement="top" title="Preview"></a>
 									</div>
 								</div>
@@ -393,7 +402,7 @@ input[readonly] {
 										<br/>
 										<?php echo date('d/m/Y G:i', strtotime($data_row_ext->DOC_DATE));?> WIB
 									</div>
-									<div class="col-xs-2">
+									<div class="col-xs-2" style="text-align:right;">
 										<a data-toggle="modal" data-target="#modal-preview<?=$data_row_ext->DOC_ID;?>" class="ace-icon fa fa-eye btn btn-sm btn-warning" data-popup="tooltip" data-placement="top" title="Preview"></a>
 									</div>
 								</div>
@@ -406,7 +415,7 @@ input[readonly] {
 										<br/>
 										<?php echo date('d/m/Y G:i', strtotime($data_row_ext->DOC_DATE));?> WIB
 									</div>
-									<div class="col-xs-2">
+									<div class="col-xs-2" style="text-align:right;">
 										<a data-toggle="modal" data-target="#modal-preview<?=$data_row_ext->DOC_ID;?>" class="ace-icon fa fa-eye btn btn-sm btn-warning" data-popup="tooltip" data-placement="top" title="Preview"></a>
 									</div>
 								</div>
@@ -420,15 +429,18 @@ input[readonly] {
 										<br/>
 										<?php echo date('d/m/Y G:i', strtotime($data_row_ext->DOC_DATE));?> WIB
 									</div>
-									<div class="col-xs-2">
+									<div class="col-xs-2" style="text-align:right;">
+										<a data-toggle="modal" data-target="#modal-preview<?=$data_row_ext->DOC_ID;?>" class="ace-icon fa fa-eye btn btn-sm btn-warning" data-popup="tooltip" data-placement="top" title="Preview"></a>
+									</div>
+									<!-- <div class="col-xs-2">
 										<form id="form_approve[]" name="form_approve[]" action="<?php echo base_url('C_notification/approve'); ?>" method="post" enctype="multipart/form-data">
 										<input type="hidden" id="si_key[]" name="si_key[]" value="<?php echo $data_row_ext->DOC_ID; ?>" class="form-control" required/>
 										<input type="hidden" id="si_approver" name="si_approver" class="form-control" value="<?=$SESSION_ROLES;?>">
 										<button type="submit" class="ace-icon fa fa-check btn btn-sm btn-primary"></button>
 										<a data-toggle="modal" data-target="#modal-reject<?=$data_row_ext->DOC_ID;?>" class="ace-icon fa fa-ban btn btn-sm btn-danger" data-popup="tooltip" data-placement="top" title="Reject"></a>
 										<a data-toggle="modal" data-target="#modal-preview<?=$data_row_ext->DOC_ID;?>" class="ace-icon fa fa-eye btn btn-sm btn-warning" data-popup="tooltip" data-placement="top" title="Preview"></a>
-									</form>
-									</div>
+										</form>
+									</div> -->
 								</div>
 							</div>
 						<?php elseif ($SESSION_ROLES=="ATASAN PENCIPTA" && $FILTER=="MENUNGGU PENDISTRIBUSI"): ?>
@@ -439,7 +451,7 @@ input[readonly] {
 										<br/>
 										<?php echo date('d/m/Y G:i', strtotime($data_row_ext->DOC_DATE));?> WIB
 									</div>
-									<div class="col-xs-2">
+									<div class="col-xs-2" style="text-align:right;">
 										<a data-toggle="modal" data-target="#modal-preview<?=$data_row_ext->DOC_ID;?>" class="ace-icon fa fa-eye btn btn-sm btn-warning" data-popup="tooltip" data-placement="top" title="Preview"></a>
 									</div>
 								</div>
@@ -452,7 +464,7 @@ input[readonly] {
 										<br/>
 										<?php echo date('d/m/Y G:i', strtotime($data_row_ext->DOC_DATE));?> WIB
 									</div>
-									<div class="col-xs-2">
+									<div class="col-xs-2" style="text-align:right;">
 										<a data-toggle="modal" data-target="#modal-preview<?=$data_row_ext->DOC_ID;?>" class="ace-icon fa fa-eye btn btn-sm btn-warning" data-popup="tooltip" data-placement="top" title="Preview"></a>
 									</div>
 								</div>
@@ -465,7 +477,7 @@ input[readonly] {
 										<br/>
 										<?php echo date('d/m/Y G:i', strtotime($data_row_ext->DOC_DATE));?> WIB
 									</div>
-									<div class="col-xs-2">
+									<div class="col-xs-2" style="text-align:right;">
 										<a data-toggle="modal" data-target="#modal-preview<?=$data_row_ext->DOC_ID;?>" class="ace-icon fa fa-eye btn btn-sm btn-warning" data-popup="tooltip" data-placement="top" title="Preview"></a>
 									</div>
 								</div>
@@ -491,8 +503,8 @@ input[readonly] {
 											}
 										?>
 									</div>
-									<div class="col-xs-2">
-										<form id="form_revisi[]" name="form_revisi[]" action="<?php echo base_url('document-revision'); ?>" method="post" enctype="multipart/form-data">
+									<div class="col-xs-2" style="text-align:right;">
+										<form id="form_revisi[]" name="form_revisi[]" action="<?php echo base_url('C_notification/revisi'); ?>" method="post" enctype="multipart/form-data">
 										<input type="hidden" id="si_key[]" name="si_key[]" value="<?php echo $data_row_ext->DOC_ID; ?>" class="form-control" required/>
 										<button type="submit" class="ace-icon fa fa-pencil btn btn-sm btn-danger"></button>
 										</form>
@@ -519,8 +531,8 @@ input[readonly] {
 											}
 										?>
 									</div>
-									<div class="col-xs-2">
-										<form id="form_revisi[]" name="form_revisi[]" action="<?php echo base_url('document-revision'); ?>" method="post" enctype="multipart/form-data">
+									<div class="col-xs-2" style="text-align:right;">
+										<form id="form_revisi[]" name="form_revisi[]" action="<?php echo base_url('C_notification/revisi'); ?>" method="post" enctype="multipart/form-data">
 										<input type="hidden" id="si_key[]" name="si_key[]" value="<?php echo $data_row_ext->DOC_ID; ?>" class="form-control" required/>
 										<button type="submit" class="ace-icon fa fa-pencil btn btn-sm btn-danger"></button>
 										</form>
@@ -780,26 +792,26 @@ input[readonly] {
 											<iframe src="<?=$url_path_persetujuan;?>"></iframe>
 										</object>
 										<label for="" class="col-sm-12 control-label" style="text-align:left">
-											<a target="_blank" href="<?=$url_path_persetujuan;?>">Dokumen Persetujuan</a>
+											<!-- <a target="_blank" href="<?=$url_path_persetujuan;?>">Dokumen Persetujuan</a> -->
 										</label>
 									</div>
 									
 									<div class="form-group">
 										<label for="" class="col-sm-12 control-label" style="text-align:left">
-											<a href="<?=$url_path_utama;?>" target="_blank">Dokumen Utama</a>
+											<a target="_blank" href="<?= base_url('C_notification/document/'.$data_row_ext->DOC_ID.'/'.$DOCD_UTAMA); ?>">Dokumen Utama</a>
 										</label>
 									</div>
 									<?php if($data_row_doc->DOCD_PELENGKAP_1!="File_Not_Found"): ?>
 										<div class="form-group">
 											<label for="" class="col-sm-12 control-label" style="text-align:left">
-												<a href="<?=$url_path_pelengkap_1;?>" target="_blank">Dokumen Pelengkap 1</a>
+												<a target="_blank" href="<?= base_url('C_notification/document/'.$data_row_ext->DOC_ID.'/'.$DOCD_PELENGKAP_1); ?>">Dokumen Pelengkap 1</a>
 											</label>
 										</div>
 									<?php endif; ?>
 									<?php if($data_row_doc->DOCD_PELENGKAP_2!="File_Not_Found"): ?>
 										<div class="form-group">
 											<label for="" class="col-sm-12 control-label" style="text-align:left">
-												<a href="<?=$url_path_pelengkap_2;?>" target="_blank">Dokumen Pelengkap 2</a>
+												<a target="_blank" href="<?= base_url('C_notification/document/'.$data_row_ext->DOC_ID.'/'.$DOCD_PELENGKAP_2); ?>">Dokumen Pelengkap 2</a>
 											</label>
 										</div>
 									<?php endif; ?>
@@ -866,7 +878,7 @@ input[readonly] {
 										<label for="" class="col-sm-12 control-label" style="text-align:left">Sampai Dengan</label>
 										<div class="col-sm-12">
 											<input type="text" class="form-control" value="<?= date('d/m/Y', strtotime($data_row_ext->DOC_TGL_EXPIRED));?>" readonly>
-										</div>										</div>
+										</div>
 									</div>
 									<div class="form-group">
 										<label for="" class="col-sm-12 control-label" style="text-align:left">Versi</label>
@@ -890,22 +902,49 @@ input[readonly] {
 						</div>
 					</div>
 					<div class="modal-footer">
-						<!-- <button type="button" class="btn btn-sm" data-dismiss="modal">
-							<i class="ace-icon fa fa-times"></i>
-							Close
-						</button>
-						
-						<button class="ace-icon fa fa-eye btn btn-sm btn-success" onclick="getElementById('form_detail').submit();">
-							Detail PMD
-						</button> -->
-						<form id="form_detail" name="form_view[]" action="<?php echo base_url('pmd-details'); ?>" method="post" enctype="multipart/form-data" target="_blank">
+						<div class="row">
+							<?php if($data_row_ext->DOC_STATUS == "MENUNGGU PENDISTRIBUSI" && $SESSION_ROLES == "PENDISTRIBUSI"): ?>
+							<div class="col-sm-6" style="text-align:left;">
+								<form id="form_approve[]" name="form_approve[]" action="<?php echo base_url('C_notification/approve'); ?>" method="post" enctype="multipart/form-data">
+									<input type="hidden" id="si_key[]" name="si_key[]" value="<?php echo $data_row_ext->DOC_ID; ?>" class="form-control" required/>
+									<input type="hidden" id="si_approver" name="si_approver" class="form-control" value="<?=$SESSION_ROLES;?>">
+									<button type="submit" class="ace-icon fa fa-check btn btn-sm btn-primary">Terima</button>
+									<a data-toggle="modal" data-target="#modal-reject<?=$data_row_ext->DOC_ID;?>" class="ace-icon fa fa-ban btn btn-sm btn-danger" data-popup="tooltip" data-placement="top" title="Reject">Tolak Sirkulasi</a>
+								</form>
+							</div>
+						<?php elseif($data_row_ext->DOC_STATUS == "MENUNGGU ATASAN PENCIPTA" && $SESSION_ROLES == "ATASAN PENCIPTA"): ?>
+							<div class="col-sm-6" style="text-align:left;">
+								<form id="form_approve[]" name="form_approve[]" action="<?php echo base_url('C_notification/approve'); ?>" method="post" enctype="multipart/form-data">
+									<input type="hidden" id="si_key[]" name="si_key[]" value="<?php echo $data_row_ext->DOC_ID; ?>" class="form-control" required/>
+									<input type="hidden" id="si_approver" name="si_approver" class="form-control" value="<?=$SESSION_ROLES;?>">
+									<button type="submit" class="ace-icon fa fa-check btn btn-sm btn-primary">Terima</button>
+									<a data-toggle="modal" data-target="#modal-reject<?=$data_row_ext->DOC_ID;?>" class="ace-icon fa fa-ban btn btn-sm btn-danger" data-popup="tooltip" data-placement="top" title="Reject">Tolak Sirkulasi</a>
+								</form>
+							</div>
+						<?php else: ?>
+							<div class="col-sm-6">
+								
+							</div>
+						<?php endif; ?>
+							<div class="col-sm-6">
+								<form id="form_detail" name="form_view[]" action="<?php echo base_url('pmd-details'); ?>" method="post" enctype="multipart/form-data" target="_blank">
+									<input type="hidden" id="si_key[]" name="si_key[]" value="<?php echo $data_row_ext->DOC_ID; ?>" class="form-control" required/>
+									<button type="button" class="btn btn-sm" data-dismiss="modal">
+										<i class="ace-icon fa fa-times"></i>
+										Close
+									</button>
+									<button type="submit" class="ace-icon fa fa-eye btn btn-sm btn-success"> Detail PMD </button>
+								</form>
+							</div>
+						</div>
+						<!-- <form id="form_detail" name="form_view[]" action="<?php echo base_url('pmd-details'); ?>" method="post" enctype="multipart/form-data" target="_blank">
 							<input type="hidden" id="si_key[]" name="si_key[]" value="<?php echo $data_row_ext->DOC_ID; ?>" class="form-control" required/>
 							<button type="button" class="btn btn-sm" data-dismiss="modal">
 								<i class="ace-icon fa fa-times"></i>
 								Close
 							</button>
 							<button type="submit" class="ace-icon fa fa-eye btn btn-sm btn-success"> Detail PMD </button>
-						</form>
+						</form> -->
 
 					</div>
 				</div>

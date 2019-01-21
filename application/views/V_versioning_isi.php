@@ -133,6 +133,15 @@ $count_notification = $count_notification + $count_news;
 	<script src="<?php echo base_url('template/backend/assets/js/html5shiv.min.js'); ?>"></script>
 	<script src="<?php echo base_url('template/backend/assets/js/respond.min.js'); ?>"></script>
 	<![endif]-->
+	<style type="text/css">
+		input[type=number]::-webkit-inner-spin-button, 
+		input[type=number]::-webkit-outer-spin-button { 
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+		margin: 0; 
+		}
+	</style>
 </head>
 <!------------------------------------------------------------------------------------------------->
 <body class="no-skin">
@@ -412,7 +421,7 @@ $count_notification = $count_notification + $count_news;
 												<div class="form-group">
 													<label for="si_template_new_kategori" class="col-sm-3 control-label" style="text-align:left">Kategori Dokumen*</label>
 													<div class="col-sm-5">
-														<select id="si_template_new_kategori" name="si_template_new_kategori" class="form-control" />
+														<select id="si_template_new_kategori" name="si_template_new_kategori" class="form-control" disabled />
 															<option value="<?php echo $DTSEKI_ID; ?>" selected><?php echo $DTSEKI_KATEGORI; ?></option>
 																<?php
 																	$is_continue = true;
@@ -440,7 +449,7 @@ $count_notification = $count_notification + $count_news;
 												<div class="form-group">
 													<label for="si_template_new_jenis" class="col-sm-3 control-label" style="text-align:left">Jenis Dokumen*</label>
 													<div class="col-sm-5">
-														<select id="si_template_new_jenis" name="si_template_new_jenis" class="form-control" />
+														<select disabled id="si_template_new_jenis" name="si_template_new_jenis" class="form-control" />
 															<option value="<?php echo $DTSEJS_ID; ?>" selected><?php echo $DTSEJS_JENIS; ?></option>
 														</select>
 													</div>
@@ -452,7 +461,7 @@ $count_notification = $count_notification + $count_news;
 												<div class="form-group">
 													<label for="si_template_new_tipe" class="col-sm-3 control-label" style="text-align:left">Tipe Dokumen*</label>
 													<div class="col-sm-5">
-														<select id="si_template_new_tipe" name="si_template_new_tipe" class="form-control" />
+														<select disabled id="si_template_new_tipe" name="si_template_new_tipe" class="form-control" />
 															<option value="<?php echo $DTSETE_ID; ?>" selected><?php echo $DTSETE_TIPE; ?></option>
 														</select>
 													</div>
@@ -487,7 +496,7 @@ $count_notification = $count_notification + $count_news;
 									</div><!-- panel-collapse -->
 								</div><!-- panel-default --><br/>
 								<div class="form-group container">
-									<button class="btn" disabled>Prev</button>
+									<button class="btn btn-info" disabled>Prev</button>
 									<button class="btn btn-warning" id="btn_atr_doc">Next</button>
 								</div>
 							</div><!-- accordion -->
@@ -502,7 +511,7 @@ $count_notification = $count_notification + $count_news;
 								<div class="row">
 									<label for="si_header_no" class="col-sm-3 control-label" style="text-align:left">Nomor Dokumen*</label>
 									<div class="col-sm-5">
-										<input type="text" id="si_header_no" name="si_header_no" maxlength="40" class="form-control" value="<?php echo $DOC_NOMOR; ?>" />
+										<input readonly type="text" id="si_header_no" name="si_header_no" maxlength="40" class="form-control" value="<?php echo $DOC_NOMOR; ?>" />
 									</div>
 									<span id="req_nomor" class="text-danger hide">Harap Isi Nomor Dokumen!</span>
 									<span id="no_result"></span>
@@ -601,7 +610,7 @@ $count_notification = $count_notification + $count_news;
 								</div>
 							</div>
 							<div class="form-group container">
-								<button class="btn" id="btn_jud_doc_prev">Prev</button>
+								<button class="btn btn-info" id="btn_jud_doc_prev">Prev</button>
 								<button class="btn btn-warning" id="btn_jud_doc">Next</button>
 							</div>
 						</div>
@@ -614,7 +623,7 @@ $count_notification = $count_notification + $count_news;
 						<div class="row container">
 							<div class="form-group row">
 								<label for="duallistbox_akses_level" class="col-sm-3 control-label" style="text-align:left">Akses Level*</label>
-								<div class="col-sm-9">
+								<div class="col-sm-7">
 									<select id="duallistbox_akses_level" multiple="multiple" size="5" name="duallistbox_akses_level[]" />
 										<?php
 											$DOC_AKSES_LEVEL = $DOC_AKSES_LEVEL;
@@ -670,7 +679,7 @@ $count_notification = $count_notification + $count_news;
 
 							<div class="form-group row">
 								<label for="duallistbox_pengguna_dokumen" class="col-sm-3 control-label" style="text-align:left">Pengguna Dokumen*</label>
-								<div class="col-sm-9">
+								<div class="col-sm-7">
 									<select id="duallistbox_pengguna_dokumen" multiple="multiple" size="5" name="duallistbox_pengguna_dokumen[]" />
 									<?php
 										$DOC_PENGGUNA = $DOC_PENGGUNA;
@@ -816,7 +825,7 @@ $count_notification = $count_notification + $count_news;
 							</div>
 
 							<div class="form-group container">
-								<button class="btn" id="btn_kepemilikan_doc_prev">Prev</button>
+								<button class="btn btn-info" id="btn_kepemilikan_doc_prev">Prev</button>
 								<button class="btn btn-warning" id="btn_kepemilikan_doc">Next</button>
 							</div>
 
@@ -830,9 +839,17 @@ $count_notification = $count_notification + $count_news;
 						<div class="row container">
 							<div class="form-group row">
 								<label for="si_history_version" class="col-sm-3 control-label" style="text-align:left">Versi*</label>
-								<?php $versi = $DOC_VERSI + 0.5; ?>
+								<?php
+									$num_char = 3;
+									$cut_text = substr($DOC_VERSI, 0, $num_char);
+									if ($DOC_VERSI{$num_char - 1} != '.') { // jika huruf ke 50 (50 - 1 karena index dimulai dari 0) bukan  spasi
+										$new_pos = strrpos($cut_text, '.'); // cari posisi spasi, pencarian dari huruf terakhir
+										$cut_text = substr($DOC_VERSI, 0, $new_pos);
+									}
+									$versi = $cut_text+1
+								?>
 								<div class="col-sm-1">
-									<input type="number" id="si_history_version" name="si_history_version" placeholder="1.0" min="0" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==5) return false;" class="form-control" value="<?php echo $versi; ?>" />
+									<input type="number" id="si_history_version" name="si_history_version" placeholder="1.0" min="0" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==5) return false;" class="form-control" value="<?php echo $versi.'.0'; ?>" />
 								</div>
 								<span id="req_versi" class="text-danger hide">Harap Isi Versi Dokumen!</span>
 							</div>
@@ -901,7 +918,7 @@ $count_notification = $count_notification + $count_news;
 							</div>
 
 							<div class="form-group container">
-								<button class="btn" id="btn_sejarah_doc_prev">Prev</button>
+								<button class="btn btn-info" id="btn_sejarah_doc_prev">Prev</button>
 								<button class="btn btn-warning" id="btn_sejarah_doc">Next</button>
 							</div>
 						</div>
@@ -939,7 +956,7 @@ $count_notification = $count_notification + $count_news;
 							</div>
 
 							<div class="form-group container">
-								<button class="btn" id="btn_terkait_doc_prev">Prev</button>
+								<button class="btn btn-info" id="btn_terkait_doc_prev">Prev</button>
 								<button class="btn btn-warning hide" id="btn_terkait_doc">Next</button>
 								<button type="submit" class="btn btn-warning" id="btn_terkait_doc_finish">Finish</button>
 							</div>
@@ -950,7 +967,7 @@ $count_notification = $count_notification + $count_news;
 						<h5 class="smaller">Unggah Dokumen</h5>
 						<hr/>
 						<div class="row container">
-							<div class="col-sm-12">
+							<div class="col-sm-10">
 								<div class="widget-box">
 									<div class="widget-body">
 										<div class="widget-main">
@@ -1050,7 +1067,7 @@ $count_notification = $count_notification + $count_news;
 									</div>
 								</div><br/>
 								<div class="form-group container">
-									<button class="btn" id="btn_unggah_doc_prev">Prev</button>
+									<button class="btn btn-info" id="btn_unggah_doc_prev">Prev</button>
 									<button class="btn btn-warning" id="btn_unggah_doc">Finish</button>
 								</div>
 							</div>
@@ -1067,9 +1084,9 @@ $count_notification = $count_notification + $count_news;
 
 		<div class="footer"></div>
 
-		<a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
+		<!-- <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
 			<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
-		</a>
+		</a> -->
 	</div><!-- /.main-container -->
 	<!------------------------------------------------------------------------------------------------->
 	<!-- JAVA SCRIPT / BOOTSTRAP / ETC -->
@@ -1134,6 +1151,11 @@ $count_notification = $count_notification + $count_news;
 	<script src="<?php echo base_url('template/rion/jquery_costum.js'); ?>"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
+			$('#si_history_version').keydown(function(e) {
+				if(e.keyCode == 189 || e.keyCode == 69) {
+			        return false;
+			    }
+			});
 			$('#dokumen_utama').on('change', function() {
 			var utama = $('#dokumen_utama').val();
 			if (utama!='') {
@@ -1385,13 +1407,27 @@ $count_notification = $count_notification + $count_news;
 					$('#req_rahasia').removeClass('hide');
 					return false;
 				}else{
-					$('#btn_terkait_doc').removeClass('hide');
-					$('#btn_terkait_doc_finish').addClass('hide');
-					$('#1').text('1 Of 6');
-					$('#2').text('2 Of 6');
-					$('#3').text('3 Of 6');
-					$('#4').text('4 Of 6');
-					$('#5').text('5 Of 6');
+					if (distribusi == 'EDOC') {
+						$('#btn_terkait_doc').removeClass('hide');
+						$('#btn_terkait_doc_finish').addClass('hide');
+						$('#1').text('1 Of 6');
+						$('#2').text('2 Of 6');
+						$('#3').text('3 Of 6');
+						$('#4').text('4 Of 6');
+						$('#5').text('5 Of 6');
+						// $("#si_owner_dept_penyimpan").append('<option value="7550">BPI</option>');
+						// $("#si_owner_dept_pendistribusi").append('<option value="7550">BPI</option>');
+					}else{
+						$('#1').text('1 Of 5');
+						$('#2').text('2 Of 5');
+						$('#3').text('3 Of 5');
+						$('#4').text('4 Of 5');
+						$('#5').text('5 Of 5');
+						$('#btn_terkait_doc_finish').removeClass('hide');
+						$('#btn_terkait_doc').addClass('hide');
+						$("#si_owner_dept_penyimpan option[value='7550']").remove();
+						$("#si_owner_dept_pendistribusi option[value='7550']").remove();
+					}
 					$('#jud_doc').addClass('hide');
 					$('#kepemilikan_doc').removeClass('hide');
 					return false;
@@ -2462,21 +2498,46 @@ $count_notification = $count_notification + $count_news;
 			//------------------------------------------------------------------------------------------------//
 			//------------------------------------------------------------------------------------------------//
 			//------------------------------------------------------------------------------------------------//
-			var demo1 = $('select[name="duallistbox_akses_level[]"]').bootstrapDualListbox({infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'});
-			var container1 = demo1.bootstrapDualListbox('getContainer');
-			container1.find('.btn').addClass('btn-white btn-info btn-bold');
+			// var demo1 = $('select[name="duallistbox_akses_level[]"]').bootstrapDualListbox({infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'});
+			// var container1 = demo1.bootstrapDualListbox('getContainer');
+			// container1.find('.btn').addClass('btn-white btn-info btn-bold');
 
-			var demo2 = $('select[name="duallistbox_pengguna_dokumen[]"]').bootstrapDualListbox({infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'});
+			// var demo2 = $('select[name="duallistbox_pengguna_dokumen[]"]').bootstrapDualListbox({infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'});
+			// var container2 = demo2.bootstrapDualListbox('getContainer');
+			// container2.find('.btn').addClass('btn-white btn-info btn-bold');
+
+			// var demo3 = $('select[name="duallistbox_dept_pendistribusi[]"]').bootstrapDualListbox({infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'});
+			// var container3 = demo3.bootstrapDualListbox('getContainer');
+			// container3.find('.btn').addClass('btn-white btn-info btn-bold');
+			
+			// var demo4 = $('select[name="duallistbox_dokumen_terkait[]"]').bootstrapDualListbox({infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'});
+			// var container4 = demo4.bootstrapDualListbox('getContainer');
+			// container4.find('.btn').addClass('btn-white btn-info btn-bold').attr('disabled', true);
+			var demo1 = $('select[name="duallistbox_akses_level[]"]').bootstrapDualListbox({
+				// infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'
+				showFilterInputs: false
+			});
+			var container1 = demo1.bootstrapDualListbox('getContainer');
+			container1.find('.btn').addClass('btn-white btn-info btn-bold').html('All');
+
+			var demo2 = $('select[name="duallistbox_pengguna_dokumen[]"]').bootstrapDualListbox({
+				infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>',
+				moveOnSelect: false
+			});
 			var container2 = demo2.bootstrapDualListbox('getContainer');
 			container2.find('.btn').addClass('btn-white btn-info btn-bold');
+			container2.find('.move').html('Move');
+			container2.find('.remove').html('Remove');
+			container2.find('.moveall').html('All');
+			container2.find('.removeall').html('All');
 
 			var demo3 = $('select[name="duallistbox_dept_pendistribusi[]"]').bootstrapDualListbox({infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'});
 			var container3 = demo3.bootstrapDualListbox('getContainer');
-			container3.find('.btn').addClass('btn-white btn-info btn-bold');
+			container3.find('.btn').addClass('btn-white btn-info btn-bold').html('All');;
 			
 			var demo4 = $('select[name="duallistbox_dokumen_terkait[]"]').bootstrapDualListbox({infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'});
 			var container4 = demo4.bootstrapDualListbox('getContainer');
-			container4.find('.btn').addClass('btn-white btn-info btn-bold').attr('disabled', true);
+			container4.find('.btn').addClass('btn-white btn-info btn-bold').remove();
 			
 			/**var setRatingColors = function() {
 				$(this).find('.star-on-png,.star-half-png').addClass('orange2').removeClass('grey');

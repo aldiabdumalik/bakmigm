@@ -703,7 +703,7 @@ $count_notification = $count_notification + $count_news;
 										<div class="form-group">
 											<label for="si_owner_dept_pendistribusi" class="col-sm-3 control-label" style="text-align:left">Dept Pendistribusi*</label>
 											<div class="col-sm-9">
-												<select id="si_owner_dept_pendistribusi" name="si_owner_dept_pendistribusi" class="form-control" disabled required />
+												<select id="si_owner_dept_pendistribusi" name="si_owner_dept_pendistribusi" class="form-control" readonly required />
 												<?php
 												if($DOC_PENDISTRIBUSI=="7550"){
 												?>

@@ -115,6 +115,13 @@ $count_notification = $count_notification + $count_news;
 	input[readonly]{
 		background-color: white!important;
 	}
+	input[type=number]::-webkit-inner-spin-button, 
+	input[type=number]::-webkit-outer-spin-button { 
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	margin: 0; 
+	}
 	.modal-dialog1 {
     width: 100%;
     height: 100%;
@@ -159,14 +166,77 @@ $count_notification = $count_notification + $count_news;
 					<?php foreach ($detaillist as $key) : ?>
 						<div class="row">
 							<div class="col-md-5">
-								<div class="form-group">
-									<object data="<?= base_url('assets/original/'.$key['DOCD_PERSETUJUAN']);?>#toolbar=0&navpanes=0&scrollbar=0" width="535px" height="535px">
-										<iframe src="<?= base_url('assets/original/'.$key['DOCD_PERSETUJUAN']);?>#toolbar=0&navpanes=0&scrollbar=0" width="535px" height="535px"></iframe>
-									</object>
-									
+								<div class="row">
+									<div class="col-md-12">
+										<div class="embed-responsive embed-responsive-16by9" style="height:500px;">
+											<object data="<?= base_url('assets/original/'.$key['DOCD_PERSETUJUAN']);?>#toolbar=0&navpanes=0&scrollbar=0" class="mbed-responsive-item">
+											</object>
+										</div>
+									</div>
+									<?php if($key['DOC_MAKER']!=$SESSION_ID): ?>
+									<div class="col-md-12">
+										<div class="form-group">
+											<form class="form-horizontal" id="form_new_data" name="form_new_data" action="<?php echo base_url('C_menu/comment'); ?>" method="post" enctype="multipart/form-data">
+
+												<input type="hidden" id="si_docid" name="si_docid" value="<?php echo $key['DOC_ID']; ?>" class="form-control" required/>
+												<input type="hidden" id="si_maker" name="si_maker" value="<?php echo $key['DOC_MAKER']; ?>" class="form-control" required/>
+
+												<div class="form-group">
+													<textarea type="text" name="si_review" id="si_review" rows="7" class="form-control" style="resize:none;width: 50.3rem;margin-left: 1rem;" required></textarea>
+												</div>
+
+												<button type="submit" id="btn_comment" name="btn_comment" class="ace-icon fa fa-check btn btn-success btn-sm">Kirim</button>
+											</form>
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="widget-box">
+											<div class="widget-header">
+												<h4 class="smaller">
+													Daftar Komentar
+												</h4>
+											</div>
+										</div>
+										<div class="widget-box transparent">
+											<div class="widget-header widget-header-small">
+												<div class="widget-toolbar action-buttons">
+													<a href="#" data-action="reload">
+														<i class="ace-icon fa fa-refresh blue"></i>
+													</a>
+												</div>
+											</div>
+											<div class="widget-body">
+												<?php
+												$get_comment = $this->M_library_database->GET_COMMENT_BY_PENGGUNA($key['DOC_ID'],$SESSION_ID);
+												if (!empty($get_comment)):
+													foreach ($get_comment as $get_comment_1) {
+														$COMMENTER = $get_comment_1->DTCT_USER;
+													}
+													if ($COMMENTER == $SESSION_ID && $COMMENTER != $key['DOC_MAKER']):
+												?>
+												<ul class="list-group">
+													<?php foreach ($get_comment as $get_comment): ?>
+													<li class="list-group-item">
+														<?=$get_comment->DTCT_USER;?> : <?=$get_comment->DTCT_NOTE;?>
+														<?php if(!empty($get_comment->DTCR_ID)): ?>
+														<br>
+														<hr>
+														<p style="margin-left:5px;">
+															<i class="ace-icon fa fa-reply"></i> <?=$get_comment->DTCT_AUTHOR;?> : <?=$get_comment->DTCR_NOTE;?>
+														</p>
+														<?php endif; ?>
+													</li>
+													<?php endforeach; ?>
+												</ul>
+													<?php endif; ?>
+												<?php endif; ?>
+											</div>
+										</div>
+									</div>
+								<?php endif; ?>
 								</div>
 							</div>
-							<div class="col-md-4">
+							<div class="col-sm-4">
 								<div class="form-group">
 									<label>Abstrak</label>
 									<textarea readonly name="" id="" style="resize: none;" cols="105" rows="6"><?php echo $key['DOC_ABSTRAK'] ?></textarea>
@@ -243,29 +313,29 @@ $count_notification = $count_notification + $count_news;
 								
 							</div>
 							<div class="col-md-3" style="float: left;">
-							<?php if ($SESSION_ROLES == "PENGGUNA"): ?>
+							<?php
+								$DOC_ID = $key['DOC_ID'];
+								$session_dpt = $this->Model_detail->getDetail($SESSION_DEPARTEMENT_ID,$DOC_ID,$SESSION_JOB_LEVEL_ID); 
+							?>
+							<?php if ($session_dpt): ?>
 								<!-- sharelink -->
 								<a data-toggle="modal" data-target="#modal-sharelink<?= $key['DOC_ID'];?>" data-popup="tooltip" data-placement="top" title="Sharelink" href="" style="color: black;"><i class="glyphicon glyphicon-link" style="font-size: 2.5rem;float: right;cursor: pointer;margin-left: .7rem"></i></a>
-								 <!-- <form id="form_comment[]" style="float: right; " name="form_comment[]" method="post" enctype="multipart/form-data">
-								<input type="hidden" id="si_key[]" name="si_key" value="<?php echo $key['DOC_ID']; ?>" class="form-control" required/>
-								<button type="submit" class="btn btn-link"><i class="glyphicon glyphicon-link" style="color:black;font-size: 2.5rem;float: right;margin-left:.7rem;cursor: pointer;margin: -.4rem -1.7rem 0 -.7rem;"></i> </button>  -->
-							</form>
-							<!-- sharelink -->
+								<!-- sharelink -->
 							<?php endif ?>
-							<?php if ($SESSION_ROLES == "PENCIPTA"  ): ?>
+							<?php if ($key['DOC_MAKER'] == $SESSION_ID): ?>
 								<!-- comment -->
 							<form id="form_comment[]" style="float: right; " name="form_comment[]" action="<?php echo base_url('C_news/comment'); ?>" method="post" enctype="multipart/form-data">
 								<input type="hidden" id="si_key[]" name="si_key[]" value="<?php echo $key['DOC_ID']; ?>" class="form-control" required/>
-								<button type="submit" class="btn btn-link"><i class="fa fa-comment" style="color:black;font-size: 2.5rem;float: right;margin-left:.7rem;cursor: pointer;margin: -.4rem -1.7rem 0 -.7rem;"></i> </button>
+								<button type="submit" class="btn btn-link" data-placement="top" title="comment-list"><i class="fa fa-comment" style="color:black;font-size: 2.5rem;float: right;margin-left:.7rem;cursor: pointer;margin: -.4rem -1.7rem 0 -.7rem;"></i> </button>
 							</form>
 							<!-- end comment -->
 							<!-- versioning -->
 							<a data-toggle="modal" data-target="#modal-versioning<?= $key['DOC_ID'];?>" data-popup="tooltip" data-placement="top" title="Pengkinian" href="" style="color: black;"><i class="glyphicon glyphicon-edit" style="font-size: 2.5rem;float: right;cursor: pointer;margin-left: .7rem"></i></a>
 							<!-- end versioning -->
 							<?php endif ?>
-							<?php if ($SESSION_DEPARTEMENT_CODE == "BPI" && $SESSION_ROLES == "PENDISTRIBUSI"): ?>
+							<?php if (($SESSION_DEPARTEMENT_CODE == "BPI" || $SESSION_ID == $key['DOC_MAKER']) && ($SESSION_ROLES == "PENDISTRIBUSI" || $SESSION_ROLES == "PENCIPTA") && $key['DOC_STATUS'] == 'DIPUBLIKASI'): ?>
 							<!-- archive -->
-							<a href="" data-toggle="modal" data-target="#myModal" style="color: black;"><i class="fa fa-archive" style="font-size: 2.5rem;float: right;cursor: pointer;margin-left: .7rem"></i></a>
+							<a href="" data-placement="top" title="Arsipkan" data-toggle="modal" data-target="#myModal" style="color: black;"><i class="fa fa-archive" style="font-size: 2.5rem;float: right;cursor: pointer;margin-left: .7rem"></i></a>
 							<!-- end archive -->
 							<?php endif ?>
 							
@@ -273,7 +343,7 @@ $count_notification = $count_notification + $count_news;
 							<form id="form_bookmark[]" style="float: right; " name="form_bookmark" action="<?php echo base_url('C_bookmarks/bookmark'); ?>" method="post" enctype="multipart/form-data">
 								<input type="hidden" id="si_key" name="si_key" value="<?php echo $key['DOC_ID']; ?>" class="form-control" required/>
 								<input type="hidden" id="ur_id" name="ur_id" value="<?php echo $SESSION_ID; ?>" class="form-control" required/>
-								<button type="submit" class="btn btn-link"><i class="glyphicon glyphicon-bookmark" style="color:black;font-size: 2.5rem;float: right;margin-left:.7rem;cursor: pointer;margin: -.4rem -1.5rem 0 -.7rem;"></i> </button>
+								<button data-placement="top" title="Bookmark" type="submit" class="btn btn-link"><i class="glyphicon glyphicon-bookmark" style="color:black;font-size: 2.5rem;float: right;margin-left:.7rem;cursor: pointer;margin: -.4rem -1.5rem 0 -.7rem;"></i> </button>
 							</form>
 							<!-- bookmark end -->
 							</div>
@@ -289,7 +359,14 @@ $count_notification = $count_notification + $count_news;
 						      	<form action="<?php echo base_url('C_bookmarks/archived_by') ?>" method="POST">
 						        <h4><b>Alasan Non Aktifkan Dokumen</b></h4>
 						        <textarea style="resize: none;" name="note" id="" cols="77" rows="9" minlength="20"></textarea>
-						        <input type="hidden" name="si_archived" value="<?php echo $SESSION_ROLES; ?>">
+						        <?php
+						        if ($SESSION_DEPARTEMENT_CODE == "BPI") {
+						        	$si_archived = "BPI";
+						        }else{
+						        	$si_archived = $SESSION_ID;
+						        }
+						   		?>
+						        <input type="hidden" name="si_archived" value="<?php echo $si_archived; ?>">
 						        <input type="hidden" name="si_key" value="<?php echo $key['DOC_ID']; ?>">
 						      </div>
 						      <div class="modal-footer">
@@ -341,7 +418,19 @@ $count_notification = $count_notification + $count_news;
 														<p>:</p>
 													</div>
 													<div class="col-sm-1">
-														<input type="number" id="si_history_version2" name="si_history_version" placeholder="1.0" min="0" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==5) return false;" class="form-control" value="<?php echo $key['DOC_VERSI']; ?>" />
+<?php
+$versi_awal = $key['DOC_VERSI'];
+$num_char = 3;
+$cut_text = substr($versi_awal, 0, $num_char);
+if ($versi_awal{$num_char - 1} != '.') { // jika huruf ke 50 (50 - 1 karena index dimulai dari 0) bukan  spasi
+	$new_pos = strrpos($cut_text, '.'); // cari posisi spasi, pencarian dari huruf terakhir
+	$cut_text = substr($versi_awal, 0, $new_pos);
+}
+$versi = $cut_text+1;
+$versi_isi = $versi.".0";
+$versi_meta = $versi_awal + 0.1;
+?>
+<input type="number" id="si_history_version" name="si_history_version" placeholder="1.0" min="0" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==5) return false;" class="form-control" value="<?php echo $versi_awal; ?>" />
 													</div>
 												</div>
 												<div class="row" id="radio">
@@ -397,32 +486,32 @@ $count_notification = $count_notification + $count_news;
 									<div class="modal-body">
 										<form action="<?php echo base_url('C_menu/sharelink'); ?>" id="form_link[]" name="form_link[]" method="post" enctype="multipart/form-data">
 										<div class="form-group">
-										    <label for="exampleInputEmail1">Email</label>
-										    <select id="email" name="email" class="form-control" />
-											<option value="">Pilih</option>
+										    <label for="email">Email</label>
+										    <select id="email" multiple="multiple" size="5" name="email[]" class="form-control" />
 											<?php
 											$get_data_ext = $this->Model_detail->DB_GET_EMAIL();
 											foreach($get_data_ext as $data_row_ext){
 											?>
-											<option id="<?php echo $data_row_ext->UR_EMAIL; ?>" value="<?php echo $data_row_ext->UR_EMAIL; ?>"><?php echo $data_row_ext->UR_EMAIL; ?></option>
+											<option id="<?php echo $data_row_ext->UR_EMAIL; ?>" value="<?php echo $data_row_ext->UR_EMAIL; ?>"><?php echo $data_row_ext->UR_ID; ?></option>
 											<?php
 											}
 											?>
-										</select>
+											</select>
 										</div>
 										<div class="form-group">
-										    <label for="exampleInputEmail1">Tulis Pesan</label>
+										    <label for="pesan">Tulis Pesan</label>
 										    <textarea style="resize: none;" class="form-control" name="pesan" id="pesan" cols="30" rows="10"></textarea>
 										</div>
-									<div class="modal-footer">
-										
+										<div class="modal-footer">
 											<input type="hidden" id="si_key" name="si_key" value="<?php echo $key['DOC_ID']; ?>" class="form-control" required/>
+											<input type="hidden" name="pengirim" value="<?= $SESSION_ID ?>">
 											<button class="btn btn-primary btn-sm">
-												<i class="glyphicon glyphicon-plus"></i> Kirim</button>
-										<button class="btn btn-sm" data-dismiss="modal">
+												<i class="glyphicon glyphicon-plus"></i> Kirim
+											</button>
+											<button class="btn btn-sm" data-dismiss="modal">
 											<i class="ace-icon fa fa-times"></i>
 											Close
-										</button>
+											</button>
 										</form>
 									</div>
 									</div>
@@ -557,40 +646,7 @@ $count_notification = $count_notification + $count_news;
 								</div>
 							</div>
 						</div>
-							<!-- end -->
-						<div class="row">
-							<div class="col-md-5">
-								<div id="accordion" class="accordion-style1 panel-group" style="margin-top: -7rem;">
-									<div class="panel panel-default">
-										<div class="panel-heading">
-											<h4 class="panel-title">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse_new_data">
-													<i class="ace-icon fa fa-angle-right bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-													Tulis Komentar Anda
-												</a>
-											</h4>
-										</div>
-										<div class="panel-collapse collapse in" id="collapse_new_data">
-											<div class="panel-body">
-
-												<form class="form-horizontal" id="form_new_data" name="form_new_data" action="<?php echo base_url('C_notification/comment_process'); ?>" method="post" enctype="multipart/form-data">
-
-													<input type="hidden" id="si_docid" name="si_docid" value="<?php echo $key['DOC_ID']; ?>" class="form-control" required/>
-													<input type="hidden" id="si_maker" name="si_maker" value="<?php echo $key['DOC_MAKER']; ?>" class="form-control" required/>
-
-													<div class="form-group">
-														<textarea type="text" name="si_review" id="si_review" rows="7" class="form-control" style="resize:none;width: 50.3rem;margin-left: 1rem;" required></textarea>
-													</div>
-
-													<button type="submit" id="btn_comment" name="btn_comment" class="ace-icon fa fa-check btn btn-success btn-sm">Kirim</button>
-												</form>
-
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
+						<!-- end -->
 					<?php endforeach; ?>
 				</div>
 				
@@ -697,6 +753,11 @@ $count_notification = $count_notification + $count_news;
 </html>
 <!------------------------------------------------------------------------------------------------->
 <script>
+	$('#si_history_version').keydown(function(e) {
+		if(e.keyCode == 189 || e.keyCode == 69) {
+	        return false;
+	    }
+	});
 $('#show').hide();
 
 	$('#click').click(function(){
@@ -715,17 +776,25 @@ $('#show').hide();
 		$('#radio1').change(function() {
 			$('#v_isi').removeClass('hide');
 			$('#v_meta').addClass('hide');
+			$('#si_history_version').val('<?=$versi_isi?>');
 		});
 		$('#radio2').change(function() {
 			$('#v_isi').addClass('hide');
 			$('#v_meta').removeClass('hide');
+			$('#si_history_version').val('<?=$versi_meta?>');
 		});
 		$('[data-toggle="tooltip"]').tooltip()
 	});
 
-	$(function(){
-		$('#email').autocomplete({
-			source : "<?php echo base_url('C_menu/autocompleteemail'); ?>"
-		});
-	})
+	// $(function(){
+	// 	$('#email').autocomplete({
+	// 		source : "<?php echo base_url('C_menu/autocompleteemail'); ?>"
+	// 	});
+	// })
+	var demo1 = $('select[name="email[]"]').bootstrapDualListbox({
+		infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>',
+		moveOnSelect: false
+	});
+	var container1 = demo1.bootstrapDualListbox('getContainer');
+	container1.find('.btn').addClass('btn-white btn-info btn-bold');
 </script>

@@ -5,7 +5,7 @@ class C_bookmarks extends CI_Controller {
         parent::__construct();
         $this->load->model('Model_detail');
 		if($this->session->userdata('session_bgm_edocument_status') != "LOGIN"){
-			redirect(base_url("C_index"));
+			redirect(base_url());
 		}
     }
 	public function index(){
@@ -30,7 +30,7 @@ class C_bookmarks extends CI_Controller {
 		$cek = $this->Model_detail->cek_book($si_key,$ur_id);
 		if ($cek) {
 			$this->session->set_flashdata('pesan_gagal','Gagal!');
-			redirect(base_url('C_menu/detail/'.$si_key),'refresh');
+			redirect(base_url('document-details-'.$si_key),'refresh');
 		}
 		$data = array(
 				'DOCB_ID' => $this->M_library_module->GENERATOR_REFF(),
@@ -40,10 +40,10 @@ class C_bookmarks extends CI_Controller {
 		$is_ok = $this->M_library_database->DB_INSERT_DATA_BOOKMARK($data);
 		if($is_ok){
 			$this->session->set_flashdata('pesan','Berhasil!');
-			redirect(base_url('C_menu/detail/'.$si_key),'refresh');
+			redirect(base_url('document-details-'.$si_key),'refresh');
 		}else{
 			$this->session->set_flashdata('pesan_gagal','Gagal!');
-			redirect(base_url('C_menu/detail/'.$si_key),'refresh');
+			redirect(base_url('document-details-'.$si_key),'refresh');
 		}
 
 	}
@@ -70,18 +70,20 @@ class C_bookmarks extends CI_Controller {
 			echo '
 				<script>
 					alert("UNKNOWN COMMAND");
-					window.location.href = "'.base_url('C_notification').'";
+					window.location.href = "'.base_url('notification').'";
 				</script>
 			';
 			exit();
 		}
-		$si_key 		= $this->input->post('si_key');
-		$get_data = $this->M_library_database->DB_GET_SEARCH_DATA_DOCUMENT_BY_ID_EVO($si_key);
+		$si_key 	= $this->input->post('si_key');
+		$si_archived= $this->input->post('si_archived');
+		$note 		= $this->input->post('note');
+		$get_data 	= $this->M_library_database->DB_GET_SEARCH_DATA_DOCUMENT_BY_ID_EVO($si_key);
 		if(empty($get_data)||$get_data==""){
 			echo '
 				<script>
 					alert("DATA NOT FOUND");
-					window.location.href = "'.base_url('C_notification').'";
+					window.location.href = "'.base_url('notification').'";
 				</script>
 			';
 			exit();
@@ -91,12 +93,10 @@ class C_bookmarks extends CI_Controller {
 			$DOC_ID					= $data_row->DOC_ID;
 			$DOC_STATUS             = $data_row->DOC_STATUS;
 		}
-		$si_archived 				= $this->input->post('si_archived');
-		$note						= $this->input->post('note');
 		$data_update = array(
 			'DOC_ID' => $DOC_ID,
-			'DOC_STATUS' => "Diarsipkan oleh BPI",
-			'DOC_STATUS_ACTIVITY' => "Diarsipkan oleh BPI",
+			'DOC_STATUS' => "DIARSIPKAN",
+			'DOC_STATUS_ACTIVITY' => "Diarsipkan oleh ".$si_archived,
 			'DOC_NOTE' => $note
 		);
 		$is_ok = $this->M_library_database->DB_UPDATE_DATA_DOCUMENT($DOC_ID,$data_update);
@@ -104,7 +104,7 @@ class C_bookmarks extends CI_Controller {
 			echo '
 				<script>
 					alert("Pemutakhiran Data Berhasil");
-					window.location.href = "'.base_url('C_menu').'";
+					window.location.href = "'.base_url('notification').'";
 				</script>
 			';
 			exit();
@@ -112,7 +112,7 @@ class C_bookmarks extends CI_Controller {
 			echo '
 				<script>
 					alert("Pemutakhiran Data Gagal, Mohon Cek Kembali");
-					window.location.href = "'.base_url('C_menu').'";
+					window.location.href = "'.base_url('notification').'";
 				</script>
 			';
 			exit();

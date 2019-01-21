@@ -324,42 +324,61 @@ $count_notification = $count_notification + $count_news;
 										<h4 class="panel-title">
 											<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapse_new_data">
 												<i class="ace-icon fa fa-angle-right bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
-												&nbsp;Cari
+												Reporting
 											</a>
 										</h4>
 									</div>
 									<div class="panel-collapse collapse in" id="collapse_new_data">
 										<div class="panel-body">
-											<form class="form-horizontal" id="form_search" name="form_search" action="<?php echo base_url('C_report'); ?>" method="post" enctype="multipart/form-data">
-												<table width="100%">
-													<tr>
-														<th>
-															<div class="col-lg-11 col-xl-11 form-group">
-																<label for="si_date_from" class="control-label" style="text-align:left">Tgl Dari</label>
-																<input type="text" id="si_date_from" name="si_date_from" placeholder="Date From" class="form-control date-picker" data-date-format="yyyy-mm-dd"/>
-															</div>
-														</th>
-														<th>&nbsp;</th>
-														<th>
-															<div class="col-lg-11 col-xl-11 form-group">
-																<label for="si_date_to" class="control-label" style="text-align:left">Tgl Sampai</label>
-																<input type="text" id="si_date_to" name="si_date_to" placeholder="Date To" class="form-control date-picker" data-date-format="yyyy-mm-dd"/>
-															</div>
-														</th>
-														<th>&nbsp;</th>
-														<th>
-															<div class="col-lg-11 col-xl-11 form-group">
-																<label for="si_type_report" class="control-label" style="text-align:left">Tipe Laporan</label>
-																<select id="si_type_report" name="si_type_report" class="form-control">
-																	<option value="">Pilih</option>
-																	<option value="DOCUMENT">DOCUMENT</option>
-																	<option value="USER">USER</option>
-																</select>
-															</div>
-														</th>
-													</tr>
-												</table>
-												<button type="submit" id="btn_search" name="btn_search" class="ace-icon fa fa-check btn btn-success btn-sm"></button>
+											<form class="form-horizontal" id="form_search" name="form_search" action="<?php echo base_url('C_report/report'); ?>" method="post" enctype="multipart/form-data">
+											<label for="">Priode</label>
+											<div class="row">
+												<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+													<input type="text" id="si_date_from" name="si_date_from" placeholder="Dari Tanggal" class="form-control date-picker" autocomplete="off">
+												</div>
+												<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+													<input type="text" id="si_date_to" name="si_date_to" placeholder="Sampai Tanggal" class="form-control date-picker" autocomplete="off" />
+												</div>
+												<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+													<select id="duallistbox_dokumen" multiple="multiple" size="5" name="duallistbox_dokumen[]" />
+														<?php
+														$is_continue = true;
+														//$DOC_ID,$DOC_NOMOR,$DOC_NAMA,$DOC_MAKER,$DOC_APPROVE,$DOC_STATUS
+														$get_data_ext = $this->M_library_database->DB_GET_DOCUMENT();
+														if(empty($get_data_ext)||$get_data_ext==""){
+														$is_continue = false;
+														}
+														if($is_continue){
+														foreach($get_data_ext as $data_row_ext){
+														?>
+														<option value="<?php echo $data_row_ext->DOC_ID; ?>"><?php echo $data_row_ext->DOC_NAMA; ?></option>
+														<?php
+														}
+														}else{
+														?>
+														
+														<?php
+														}
+														?>
+													</select>
+												</div>
+												<br/>
+												<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+													<label for="tipe">Tipe Laporan :</label><br/>
+													<select name="tipe" id="tipe">
+														<option value="">Pilih</option>
+														<option>Laporan Rekap Komentar</option>
+														<option>Laporan Rekap Dokumen Expired</option>
+														<option>Laporan Catatan Revisi</option>
+														<?php if($SESSION_ROLES=="ADMIN DOKUMEN"): ?>
+														<option>Laporan Penggunaan Dokumen</option>
+														<option>Laporan Log Aktivitas penggunaan Dokumen</option>
+														<?php endif; ?>
+													</select>
+												</div>
+											</div>
+											<br/>
+											<input type="submit" class="btn btn-success" value="Cari">	
 											</form>
 										</div>
 									</div>
@@ -800,6 +819,7 @@ $count_notification = $count_notification + $count_news;
 			//datepicker plugin
 			//link
 			$('.date-picker').datepicker({
+				format: 'dd/mm/yyyy',
 				autoclose: true,
 				todayHighlight: true
 			})
@@ -1086,9 +1106,16 @@ $count_notification = $count_notification + $count_news;
 			//------------------------------------------------------------------------------------------------//
 			//------------------------------------------------------------------------------------------------//
 			//------------------------------------------------------------------------------------------------//
-			var demo1 = $('select[name="duallistbox_demo1[]"]').bootstrapDualListbox({infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'});
-			var container1 = demo1.bootstrapDualListbox('getContainer');
-			container1.find('.btn').addClass('btn-white btn-info btn-bold');
+			var demo2 = $('select[name="duallistbox_dokumen[]"]').bootstrapDualListbox({
+				infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>',
+				moveOnSelect: false
+			});
+			var container2 = demo2.bootstrapDualListbox('getContainer');
+			container2.find('.btn').addClass('btn-white btn-info btn-bold');
+			container2.find('.move').html('Move');
+			container2.find('.remove').html('Remove');
+			container2.find('.moveall').html('All');
+			container2.find('.removeall').html('All');
 			
 			/**var setRatingColors = function() {
 				$(this).find('.star-on-png,.star-half-png').addClass('orange2').removeClass('grey');

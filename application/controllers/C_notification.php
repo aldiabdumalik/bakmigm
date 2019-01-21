@@ -13,6 +13,46 @@ class C_notification extends CI_Controller {
 	{
 		$this->load->view('V_notification');
 	}
+	public function document($docid,$doc)
+	{
+		$get = $this->M_library_database->DB_GET_DATA_DOCUMENT_DETAIL_BY_ID_EVO($docid);
+		foreach($get as $data_row_doc){
+			$DOCD_UTAMA = $data_row_doc->DOCD_UTAMA;
+			$EXT_UTAMA	= $data_row_doc->DOCD_UTAMA_EXT;
+			$STATUS_UTAMA = $data_row_doc->DOCD_UTAMA_STATUS;
+
+			$DOCD_PELENGKAP_1 = $data_row_doc->DOCD_PELENGKAP_1;
+			$EXT_1 = $data_row_doc->DOCD_PELENGKAP_1_EXT;
+			$STATUS_1 = $data_row_doc->DOCD_PELENGKAP_1_STATUS;
+
+			$DOCD_PELENGKAP_2 = $data_row_doc->DOCD_PELENGKAP_2;
+			$EXT_2 = $data_row_doc->DOCD_PELENGKAP_2_EXT;
+			$STATUS_2 = $data_row_doc->DOCD_PELENGKAP_2_STATUS;
+
+			$DOCD_PERSETUJUAN = $data_row_doc->DOCD_PERSETUJUAN;
+		}
+		if ($doc == $DOCD_UTAMA) {
+			$url['url'] = base_url('assets/pdf/'.$DOCD_UTAMA.'.pdf');
+			$url['ext'] = $EXT_UTAMA;
+		}elseif ($doc == $DOCD_PELENGKAP_1) {
+			if ($EXT_1=='pdf' || $EXT_1=='doc' || $EXT_1=='docx' || $EXT_1=='xls' || $EXT_1=='xlsx' || $EXT_1=='ppt' || $EXT_1=='pptx' || $EXT_1=='vsd' || $EXT_1=='vsdx') {
+				$url['url'] = base_url('assets/pdf/'.$DOCD_PELENGKAP_1.'.pdf');
+				$url['ext'] = $EXT_1;
+			}else{
+				$url['url'] = base_url('assets/original/'.$DOCD_PELENGKAP_1.'.'.$EXT_1);
+				$url['ext'] = $EXT_1;
+			}
+		}else{
+			if ($EXT_2=='pdf' || $EXT_2=='doc' || $EXT_2=='docx' || $EXT_2=='xls' || $EXT_2=='xlsx' || $EXT_2=='ppt' || $EXT_2=='pptx' || $EXT_2=='vsd' || $EXT_2=='vsdx') {
+				$url['url'] = base_url('assets/pdf/'.$DOCD_PELENGKAP_2.'.pdf');
+				$url['ext'] = $EXT_2;
+			}else{
+				$url['url'] = base_url('assets/original/'.$DOCD_PELENGKAP_2.'.'.$EXT_2);
+				$url['ext'] = $EXT_2;
+			}
+		}
+		$this->load->view('V_document', $url);
+	}
 
 	public function approve()
 	{
@@ -20,7 +60,7 @@ class C_notification extends CI_Controller {
 			echo '
 				<script>
 					alert("UNKNOWN COMMAND");
-					window.location.href = "'.base_url('C_notification').'";
+					window.location.href = "'.base_url('notification').'";
 				</script>
 			';
 			exit();
@@ -129,7 +169,7 @@ class C_notification extends CI_Controller {
 			echo '
 				<script>
 					alert("Pemutakhiran Data Berhasil");
-					window.location.href = "'.base_url('C_notification').'";
+					window.location.href = "'.base_url('notification').'";
 				</script>
 			';
 			exit();
@@ -137,7 +177,7 @@ class C_notification extends CI_Controller {
 			echo '
 				<script>
 					alert("Pemutakhiran Data Gagal, Mohon Cek Kembali");
-					window.location.href = "'.base_url('C_notification').'";
+					window.location.href = "'.base_url('notification').'";
 				</script>
 			';
 			exit();
@@ -785,9 +825,9 @@ class C_notification extends CI_Controller {
 		include (APPPATH.'libraries/FPDI/fpdi.php');
 		//STEP 1
 		$catatan_versi 							= $this->input->post('catatan_versi');
-		$si_template_new_kategori				= $this->input->post('si_template_new_kategori');
-		$si_template_new_jenis					= $this->input->post('si_template_new_jenis');
-		$si_template_new_tipe					= $this->input->post('si_template_new_tipe');
+		// $si_template_new_kategori				= $this->input->post('si_template_new_kategori');
+		// $si_template_new_jenis					= $this->input->post('si_template_new_jenis');
+		// $si_template_new_tipe					= $this->input->post('si_template_new_tipe');
 		$si_template_new_group_proses			= $this->input->post('si_template_new_group_proses');
 		$si_template_new_proses					= $this->input->post('si_template_new_proses');
 		//STEP 2
@@ -843,20 +883,49 @@ class C_notification extends CI_Controller {
 		$si_approve 							= $this->input->post('si_approve');
 		//Check on
 		$dokumen_utama_on 						= $this->input->post('dokumen_utama_on');
+		if (isset($dokumen_utama_on)) {
+			$convert_dokumen_utama 				= 1;
+		}else{
+			$convert_dokumen_utama 				= 0;
+		}
 		$dokumen_pelengkap_1_on 				= $this->input->post('dokumen_pelengkap_1_on');
+		if (isset($dokumen_pelengkap_1_on)) {
+			$convert_dokumen_pelengkap_1 		= 1;
+		}else{
+			$convert_dokumen_pelengkap_1 		= 0;
+		}
 		$dokumen_pelengkap_2_on 				= $this->input->post('dokumen_pelengkap_2_on');
-		// Ambil Pendistribusi
+		if (isset($dokumen_pelengkap_2_on)) {
+			$convert_dokumen_pelengkap_2 		= 1;
+		}else{
+			$convert_dokumen_pelengkap_2 		= 0;
+		}
+		$data_update_detail = array(
+			'DOCD_UTAMA_STATUS' => $convert_dokumen_utama,
+			'DOCD_PELENGKAP_1_STATUS' => $convert_dokumen_pelengkap_1,
+			'DOCD_PELENGKAP_1_STATUS' => $convert_dokumen_pelengkap_2
+		);
+		$is_ok = $this->M_library_database->DB_UPDATE_DATA_DOCUMENT_DETAIL_REFISI_EVO($si_code,$data_update_detail);
 		// Ambil Pendistribusi
 		if ($si_owner_dept_pendistribusi==$SESSION_DEPARTEMENT_ID) {
-			$getPendistribusi = $this->M_library_database->getDEPARTEMEN($si_owner_dept_pendistribusi);
+			// $getPendistribusi = $this->M_library_database->getDEPARTEMEN($si_owner_dept_pendistribusi);
+			// foreach ($getPendistribusi as $data) {
+			// 	$dpt 		= $data->DN_ID;
+			// 	$dpt_code 	= $data->DN_CODE;
+			// 	$dpt_name 	= $data->DN_NAME;
+			// }
+			// $PENDISTRIBUSI_FINAL_CODE 	= $dpt_code;
+			// $PENDISTRIBUSI_FINAL_NAME 	= $dpt_name;
+			// $STATUS_FINAL				= "MENUNGGU PENDISTRIBUSI";
+			$getPendistribusi = $this->M_library_database->GET_DEPT_DIVISI($si_owner_dept_pendistribusi);
 			foreach ($getPendistribusi as $data) {
-				$dpt 		= $data->DN_ID;
-				$dpt_code 	= $data->DN_CODE;
-				$dpt_name 	= $data->DN_NAME;
+				$dv 		= $data->DI_ID;
+				$dv_code	= $data->DI_CODE;
+				$dv_name	= $data->DI_NAME;
 			}
-			$PENDISTRIBUSI_FINAL_CODE 	= $dpt_code;
-			$PENDISTRIBUSI_FINAL_NAME 	= $dpt_name;
-			$STATUS_FINAL				= "MENUNGGU PENDISTRIBUSI";
+			$PENDISTRIBUSI_FINAL_CODE 	= $dv_code;
+			$PENDISTRIBUSI_FINAL_NAME 	= $dv_name;
+			$STATUS_FINAL				= "MENUNGGU ATASAN PENCIPTA";
 		}elseif ($si_owner_dept_pendistribusi==$SESSION_DIVISI_ID) {
 			$getPendistribusi = $this->M_library_database->getDIVISI($si_owner_dept_pendistribusi);
 			foreach ($getPendistribusi as $data) {
@@ -899,17 +968,16 @@ class C_notification extends CI_Controller {
 				if ($dokumen_utama_extention == 'doc' || $dokumen_utama_extention == 'docx' || $dokumen_utama_extention == 'xls' || $dokumen_utama_extention == 'xlsx' || $dokumen_utama_extention == 'ppt' || $dokumen_utama_extention == 'pptx' || $dokumen_utama_extention == 'vsd' || $dokumen_utama_extention == 'vsdx' || $dokumen_utama_extention == 'pdf') {
 					// Converter
 					shell_exec('export HOME=/tmp && libreoffice --headless --convert-to pdf --outdir assets/pdf assets/original/'.$file1);
+					if ($dokumen_utama_extention=='pdf') {
+						copy('./assets/original/'.$file1, './assets/pdf/'.$file1);
+						$convert_dokumen_utama = 1;
+					}
 					$dokumen_search_acr = "";
 					$txt1 = new PdfToText(base_url('assets/pdf/'.$file1Name.'.pdf'));
 					$dokumen_search_acr = $txt1->Text;
 					// Watermark Pdf
-					if ($dokumen_utama_extention != 'pdf') {
-						$GLOBALS['dokumen_utama'] = './assets/pdf/'.$file1Name.'.pdf';
-						chmod($GLOBALS['dokumen_utama'], 0777);
-					}else{
-						$GLOBALS['dokumen_utama'] = './assets/original/'.$file1Name.'.pdf';
-						chmod($GLOBALS['dokumen_utama'], 0777);
-					}
+					$GLOBALS['dokumen_utama'] = './assets/pdf/'.$file1Name.'.pdf';
+					chmod($GLOBALS['dokumen_utama'], 0777);
 					include (APPPATH.'libraries/watermark_utama.php');
 					$pdf = new Watermark_utama();
 					$pdf->AddPage();
@@ -926,11 +994,11 @@ class C_notification extends CI_Controller {
 				}
 				
 				$dokumen_utama_name = $file1Name;
-				if (isset($dokumen_utama_on)) {
-					$convert_dokumen_utama = 1;
-				}else{
-					$convert_dokumen_utama = 0;
-				}
+				// if (isset($dokumen_utama_on)) {
+				// 	$convert_dokumen_utama = 1;
+				// }else{
+				// 	$convert_dokumen_utama = 0;
+				// }
 			}else{
 				$errors = $this->upload->display_errors();
 				die($errors);
@@ -967,14 +1035,13 @@ class C_notification extends CI_Controller {
 				$file2Name = $this->upload->data('raw_name');
 				if ($dokumen_pelengkap_1_extention == 'doc' || $dokumen_pelengkap_1_extention == 'docx' || $dokumen_pelengkap_1_extention == 'xls' || $dokumen_pelengkap_1_extention == 'xlsx' || $dokumen_pelengkap_1_extention == 'ppt' || $dokumen_pelengkap_1_extention == 'pptx' || $dokumen_pelengkap_1_extention == 'vsd' || $dokumen_pelengkap_1_extention == 'vsdx' || $dokumen_pelengkap_1_extention == 'pdf') {
 					shell_exec('export HOME=/tmp && libreoffice --headless -convert-to pdf --outdir assets/pdf assets/original/'.$file2);
-					// Watermark Pdf
-					if ($dokumen_pelengkap_1_extention != 'pdf') {
-						$GLOBALS['dokumen_pelengkap_1'] = './assets/pdf/'.$file2Name.'.pdf';
-						chmod($GLOBALS['dokumen_pelengkap_1'], 0777);
-					}else{
-						$GLOBALS['dokumen_pelengkap_1'] = './assets/original/'.$file2Name.'.pdf';
-						chmod($GLOBALS['dokumen_pelengkap_1'], 0777);
+					if ($dokumen_pelengkap_1_extention=='pdf') {
+						copy('./assets/original/'.$file2, './assets/pdf/'.$file2);
+						$convert_dokumen_pelengkap_1 = 1;
 					}
+					// Watermark Pdf
+					$GLOBALS['dokumen_pelengkap_1'] = './assets/pdf/'.$file2Name.'.pdf';
+					chmod($GLOBALS['dokumen_pelengkap_1'], 0777);
 					include (APPPATH.'libraries/watermark_p1.php');
 					$pdf = new Watermark_p1();
 					$pdf->AddPage();
@@ -988,11 +1055,11 @@ class C_notification extends CI_Controller {
 					$pdf->Output($GLOBALS['dokumen_pelengkap_1'],'F');
 				}
 				$dokumen_pelengkap_1_name = $file2Name;
-				if (isset($dokumen_pelengkap_1_on)) {
-					$convert_dokumen_pelengkap_1 = 1;
-				}else{
-					$convert_dokumen_pelengkap_1 = 0;
-				}
+				// if (isset($dokumen_pelengkap_1_on)) {
+				// 	$convert_dokumen_pelengkap_1 = 1;
+				// }else{
+				// 	$convert_dokumen_pelengkap_1 = 0;
+				// }
 			}else{
 				$errors = $this->upload->display_errors();
 				die($errors);
@@ -1028,14 +1095,13 @@ class C_notification extends CI_Controller {
 				$file3Name = $this->upload->data('raw_name');
 				if ($dokumen_pelengkap_2_extention == 'doc' || $dokumen_pelengkap_2_extention == 'docx' || $dokumen_pelengkap_2_extention == 'xls' || $dokumen_pelengkap_2_extention == 'xlsx' || $dokumen_pelengkap_2_extention == 'ppt' || $dokumen_pelengkap_2_extention == 'pptx' || $dokumen_pelengkap_2_extention == 'vsd' || $dokumen_pelengkap_2_extention == 'vsdx' || $dokumen_pelengkap_2_extention == 'pdf') {
 					shell_exec('export HOME=/tmp && libreoffice --headless -convert-to pdf --outdir assets/pdf assets/original/'.$file3);
-					// Watermark Pdf
-					if ($dokumen_pelengkap_2_extention != 'pdf') {
-						$GLOBALS['dokumen_pelengkap_2'] = './assets/pdf/'.$file3Name.'.pdf';
-						chmod($GLOBALS['dokumen_pelengkap_2'], 0777);
-					}else{
-						$GLOBALS['dokumen_pelengkap_2'] = './assets/original/'.$file3Name.'.pdf';
-						chmod($GLOBALS['dokumen_pelengkap_2'], 0777);
+					if ($dokumen_pelengkap_2_extention=='pdf') {
+						copy('./assets/original/'.$file3, './assets/pdf/'.$file3);
+						$convert_dokumen_pelengkap_2 = 1;
 					}
+					// Watermark Pdf
+					$GLOBALS['dokumen_pelengkap_2'] = './assets/pdf/'.$file3Name.'.pdf';
+					chmod($GLOBALS['dokumen_pelengkap_2'], 0777);
 					include (APPPATH.'libraries/watermark_p2.php');
 					$pdf = new Watermark_p2();
 					$pdf->AddPage();
@@ -1118,9 +1184,9 @@ class C_notification extends CI_Controller {
 		//Dokumen Meta Data
 		$data_update = array(
 			'DOC_DATE' => $date_now,		
-			'DOC_KATEGORI' => $si_template_new_kategori,
-			'DOC_JENIS' => $si_template_new_jenis,
-			'DOC_TIPE' => $si_template_new_tipe,
+			// 'DOC_KATEGORI' => $si_template_new_kategori,
+			// 'DOC_JENIS' => $si_template_new_jenis,
+			// 'DOC_TIPE' => $si_template_new_tipe,
 			'DOC_GROUP_PROSES' => $si_template_new_group_proses,
 			'DOC_PROSES' => $si_template_new_proses,
 			'DOC_NOMOR' => $si_header_no,
@@ -1175,7 +1241,9 @@ class C_notification extends CI_Controller {
 			exit();
 		}
 		date_default_timezone_set('Asia/Jakarta');
-		$date_now								= date('Y-m-d');
+		$SESSION_DEPARTEMENT_ID = $this->session->userdata("session_bgm_edocument_departement_id");
+		$SESSION_DIVISI_ID = $this->session->userdata("session_bgm_edocument_divisi_id");
+		$date_now								= date('Y-m-d H:i:s');
 		$duallistbox_pengguna_dokumen = $this->input->post('duallistbox_pengguna_dokumen');
 		$duallistbox_pengguna_dokumen_length = count($duallistbox_pengguna_dokumen);
 		$duallistbox_pengguna_dokumen_array = "";
@@ -1191,20 +1259,68 @@ class C_notification extends CI_Controller {
 		$si_history_date_final 					= date('Y-m-d', strtotime($si_history_date_final1));
 		$si_history_keyword						= $this->input->post('si_history_keyword');
 		$si_history_abstract					= $this->input->post('si_history_abstract');
-		$duallistbox_dokumen_terkait = $this->input->post('duallistbox_dokumen_terkait');
-		$duallistbox_dokumen_terkait_length = count($duallistbox_dokumen_terkait);
-		$duallistbox_dokumen_terkait_array = "";
-		for($x = 0; $x < $duallistbox_dokumen_terkait_length; $x++) {
-			$duallistbox_dokumen_terkait_array .= $duallistbox_dokumen_terkait[$x]."|";
-		}
-		$duallistbox_dokumen_terkait_list = substr($duallistbox_dokumen_terkait_array,0,-1);
+		$duallistbox_dokumen_terkait 			= $this->input->post('duallistbox_dokumen_terkait');
+		
+		if (!empty($duallistbox_dokumen_terkait)) {
+			$duallistbox_dokumen_terkait_length = count($duallistbox_dokumen_terkait);
+			$duallistbox_dokumen_terkait_array = "";
+			for($x = 0; $x < $duallistbox_dokumen_terkait_length; $x++) {
+				$duallistbox_dokumen_terkait_array .= $duallistbox_dokumen_terkait[$x]."|";
+			}
+			$duallistbox_dokumen_terkait_list = substr($duallistbox_dokumen_terkait_array,0,-1);
+		}else{
+			$duallistbox_dokumen_terkait_list = "";
+		}	
 		$si_code								= $this->input->post('si_code');
 		$si_userid								= $this->input->post('si_userid');
 		$si_approve 							= $this->input->post('si_approve');
 		
 		$versi 									= $this->input->post('si_history_version');
 		$catatan_versi 							= $this->input->post('catatan_versi');
+		$si_owner_dept_pendistribusi 			= $this->input->post('si_owner_dept_pendistribusi');
 
+		// Ambil Pendistribusi
+		// Ambil Pendistribusi
+		if ($si_owner_dept_pendistribusi==$SESSION_DEPARTEMENT_ID) {
+			// $getPendistribusi = $this->M_library_database->getDEPARTEMEN($si_owner_dept_pendistribusi);
+			// foreach ($getPendistribusi as $data) {
+			// 	$dpt 		= $data->DN_ID;
+			// 	$dpt_code 	= $data->DN_CODE;
+			// 	$dpt_name 	= $data->DN_NAME;
+			// }
+			// $PENDISTRIBUSI_FINAL_CODE 	= $dpt_code;
+			// $PENDISTRIBUSI_FINAL_NAME 	= $dpt_name;
+			// $STATUS_FINAL				= "MENUNGGU PENDISTRIBUSI";
+			$getPendistribusi = $this->M_library_database->GET_DEPT_DIVISI($si_owner_dept_pendistribusi);
+			foreach ($getPendistribusi as $data) {
+				$dv 		= $data->DI_ID;
+				$dv_code	= $data->DI_CODE;
+				$dv_name	= $data->DI_NAME;
+			}
+			$PENDISTRIBUSI_FINAL_CODE 	= $dv_code;
+			$PENDISTRIBUSI_FINAL_NAME 	= $dv_name;
+			$STATUS_FINAL				= "MENUNGGU ATASAN PENCIPTA";
+		}elseif ($si_owner_dept_pendistribusi==$SESSION_DIVISI_ID) {
+			$getPendistribusi = $this->M_library_database->getDIVISI($si_owner_dept_pendistribusi);
+			foreach ($getPendistribusi as $data) {
+				$dv 		= $data->DI_ID;
+				$dv_code	= $data->DI_CODE;
+				$dv_name	= $data->DI_NAME;
+			}
+			$PENDISTRIBUSI_FINAL_CODE 	= $dv_code;
+			$PENDISTRIBUSI_FINAL_NAME 	= $dv_name;
+			$STATUS_FINAL				= "MENUNGGU ATASAN PENCIPTA";
+		}else{
+			$getPendistribusi = $this->M_library_database->getDEPARTEMEN($si_owner_dept_pendistribusi);
+			foreach ($getPendistribusi as $data) {
+				$dpt 		= $data->DN_ID;
+				$dpt_code 	= $data->DN_CODE;
+				$dpt_name 	= $data->DN_NAME;
+			}
+			$PENDISTRIBUSI_FINAL_CODE 	= $dpt_code;
+			$PENDISTRIBUSI_FINAL_NAME 	= $dpt_name;
+			$STATUS_FINAL				= "MENUNGGU PENDISTRIBUSI";
+		}
 		$data_update = array(
 			'DOC_PENGGUNA' => $duallistbox_pengguna_dokumen_list,
 			'DOC_VERSI' => $versi,
@@ -1215,7 +1331,8 @@ class C_notification extends CI_Controller {
 			'DOC_ABSTRAK' => $si_history_abstract,
 			'DOC_TERKAIT' => $duallistbox_dokumen_terkait_list,
 			'DOC_MAKER' => $si_userid,
-			'DOC_STATUS' => "MENUNGGU ".$si_approve
+			'DOC_STATUS' => $STATUS_FINAL,
+			'DOC_STATUS_ACTIVITY' => "Menunggu Persetujuan dari ".$PENDISTRIBUSI_FINAL_CODE." (".$PENDISTRIBUSI_FINAL_NAME.")",
 		);
 		$is_ok = $this->M_library_database->DB_UPDATE_DATA_DOCUMENT_REFISI_EVO($si_code,$data_update);
 
@@ -1314,8 +1431,29 @@ class C_notification extends CI_Controller {
 		$si_approve 							= $this->input->post('si_approve');
 		//Check on
 		$dokumen_utama_on 						= $this->input->post('dokumen_utama_on');
+		if (isset($dokumen_utama_on)) {
+			$convert_dokumen_utama 				= 1;
+		}else{
+			$convert_dokumen_utama 				= 0;
+		}
 		$dokumen_pelengkap_1_on 				= $this->input->post('dokumen_pelengkap_1_on');
+		if (isset($dokumen_pelengkap_1_on)) {
+			$convert_dokumen_pelengkap_1 		= 1;
+		}else{
+			$convert_dokumen_pelengkap_1 		= 0;
+		}
 		$dokumen_pelengkap_2_on 				= $this->input->post('dokumen_pelengkap_2_on');
+		if (isset($dokumen_pelengkap_2_on)) {
+			$convert_dokumen_pelengkap_2 		= 1;
+		}else{
+			$convert_dokumen_pelengkap_2 		= 0;
+		}
+		$data_update_detail = array(
+			'DOCD_UTAMA_STATUS' => $convert_dokumen_utama,
+			'DOCD_PELENGKAP_1_STATUS' => $convert_dokumen_pelengkap_1,
+			'DOCD_PELENGKAP_1_STATUS' => $convert_dokumen_pelengkap_2
+		);
+		$is_ok = $this->M_library_database->DB_UPDATE_DATA_DOCUMENT_DETAIL_REFISI_EVO($si_code,$data_update_detail);
 		// Ambil Pendistribusi
 		if ($si_approve == "PENDISTRIBUSI") {
 			if ($si_owner_dept_pendistribusi==$SESSION_DEPARTEMENT_ID) {
@@ -1365,17 +1503,16 @@ class C_notification extends CI_Controller {
 				if ($dokumen_utama_extention == 'doc' || $dokumen_utama_extention == 'docx' || $dokumen_utama_extention == 'xls' || $dokumen_utama_extention == 'xlsx' || $dokumen_utama_extention == 'ppt' || $dokumen_utama_extention == 'pptx' || $dokumen_utama_extention == 'vsd' || $dokumen_utama_extention == 'vsdx' || $dokumen_utama_extention == 'pdf') {
 					// Converter
 					shell_exec('export HOME=/tmp && libreoffice --headless --convert-to pdf --outdir assets/pdf assets/original/'.$file1);
+					if ($dokumen_utama_extention=='pdf') {
+						copy('./assets/original/'.$file1, './assets/pdf/'.$file1);
+						$convert_dokumen_utama = 1;
+					}
 					$dokumen_search_acr = "";
 					$txt1 = new PdfToText(base_url('assets/pdf/'.$file1Name.'.pdf'));
 					$dokumen_search_acr = $txt1->Text;
 					// Watermark Pdf
-					if ($dokumen_utama_extention != 'pdf') {
-						$GLOBALS['dokumen_utama'] = './assets/pdf/'.$file1Name.'.pdf';
-						chmod($GLOBALS['dokumen_utama'], 0777);
-					}else{
-						$GLOBALS['dokumen_utama'] = './assets/original/'.$file1Name.'.pdf';
-						chmod($GLOBALS['dokumen_utama'], 0777);
-					}
+					$GLOBALS['dokumen_utama'] = './assets/pdf/'.$file1Name.'.pdf';
+					chmod($GLOBALS['dokumen_utama'], 0777);
 					include (APPPATH.'libraries/watermark_utama.php');
 					$pdf = new Watermark_utama();
 					$pdf->AddPage();
@@ -1390,13 +1527,7 @@ class C_notification extends CI_Controller {
 				}else{
 					$dokumen_search_acr = $si_history_abstract;
 				}
-				
 				$dokumen_utama_name = $file1Name;
-				if (isset($dokumen_utama_on)) {
-					$convert_dokumen_utama = 1;
-				}else{
-					$convert_dokumen_utama = 0;
-				}
 			}else{
 				$errors = $this->upload->display_errors();
 				die($errors);
@@ -1433,14 +1564,13 @@ class C_notification extends CI_Controller {
 				$file2Name = $this->upload->data('raw_name');
 				if ($dokumen_pelengkap_1_extention == 'doc' || $dokumen_pelengkap_1_extention == 'docx' || $dokumen_pelengkap_1_extention == 'xls' || $dokumen_pelengkap_1_extention == 'xlsx' || $dokumen_pelengkap_1_extention == 'ppt' || $dokumen_pelengkap_1_extention == 'pptx' || $dokumen_pelengkap_1_extention == 'vsd' || $dokumen_pelengkap_1_extention == 'vsdx' || $dokumen_pelengkap_1_extention == 'pdf') {
 					shell_exec('export HOME=/tmp && libreoffice --headless -convert-to pdf --outdir assets/pdf assets/original/'.$file2);
-					// Watermark Pdf
-					if ($dokumen_pelengkap_1_extention != 'pdf') {
-						$GLOBALS['dokumen_pelengkap_1'] = './assets/pdf/'.$file2Name.'.pdf';
-						chmod($GLOBALS['dokumen_pelengkap_1'], 0777);
-					}else{
-						$GLOBALS['dokumen_pelengkap_1'] = './assets/original/'.$file2Name.'.pdf';
-						chmod($GLOBALS['dokumen_pelengkap_1'], 0777);
+					if ($dokumen_pelengkap_1_extention=='pdf') {
+						copy('./assets/original/'.$file2, './assets/pdf/'.$file2);
+						$convert_dokumen_pelengkap_1 = 1;
 					}
+					// Watermark Pdf
+					$GLOBALS['dokumen_pelengkap_1'] = './assets/pdf/'.$file2Name.'.pdf';
+					chmod($GLOBALS['dokumen_pelengkap_1'], 0777);
 					include (APPPATH.'libraries/watermark_p1.php');
 					$pdf = new Watermark_p1();
 					$pdf->AddPage();
@@ -1454,11 +1584,6 @@ class C_notification extends CI_Controller {
 					$pdf->Output($GLOBALS['dokumen_pelengkap_1'],'F');
 				}
 				$dokumen_pelengkap_1_name = $file2Name;
-				if (isset($dokumen_pelengkap_1_on)) {
-					$convert_dokumen_pelengkap_1 = 1;
-				}else{
-					$convert_dokumen_pelengkap_1 = 0;
-				}
 			}else{
 				$errors = $this->upload->display_errors();
 				die($errors);
@@ -1494,14 +1619,13 @@ class C_notification extends CI_Controller {
 				$file3Name = $this->upload->data('raw_name');
 				if ($dokumen_pelengkap_2_extention == 'doc' || $dokumen_pelengkap_2_extention == 'docx' || $dokumen_pelengkap_2_extention == 'xls' || $dokumen_pelengkap_2_extention == 'xlsx' || $dokumen_pelengkap_2_extention == 'ppt' || $dokumen_pelengkap_2_extention == 'pptx' || $dokumen_pelengkap_2_extention == 'vsd' || $dokumen_pelengkap_2_extention == 'vsdx' || $dokumen_pelengkap_2_extention == 'pdf') {
 					shell_exec('export HOME=/tmp && libreoffice --headless -convert-to pdf --outdir assets/pdf assets/original/'.$file3);
-					// Watermark Pdf
-					if ($dokumen_pelengkap_2_extention != 'pdf') {
-						$GLOBALS['dokumen_pelengkap_2'] = './assets/pdf/'.$file3Name.'.pdf';
-						chmod($GLOBALS['dokumen_pelengkap_2'], 0777);
-					}else{
-						$GLOBALS['dokumen_pelengkap_2'] = './assets/original/'.$file3Name.'.pdf';
-						chmod($GLOBALS['dokumen_pelengkap_2'], 0777);
+					if ($dokumen_pelengkap_2_extention=='pdf') {
+						copy('./assets/original/'.$file3, './assets/pdf/'.$file3);
+						$convert_dokumen_pelengkap_2 = 1;
 					}
+					// Watermark Pdf
+					$GLOBALS['dokumen_pelengkap_2'] = './assets/pdf/'.$file3Name.'.pdf';
+					chmod($GLOBALS['dokumen_pelengkap_2'], 0777);
 					include (APPPATH.'libraries/watermark_p2.php');
 					$pdf = new Watermark_p2();
 					$pdf->AddPage();
@@ -1516,11 +1640,6 @@ class C_notification extends CI_Controller {
 				}
 				
 				$dokumen_pelengkap_2_name = $file3Name;
-				if (isset($dokumen_pelengkap_2_on)) {
-					$convert_dokumen_pelengkap_2 = 1;
-				}else{
-					$convert_dokumen_pelengkap_2 = 0;
-				}
 			}else{
 				$errors = $this->upload->display_errors();
 				die($errors);
@@ -1614,19 +1733,37 @@ class C_notification extends CI_Controller {
 		$is_ok = $this->M_library_database->DB_UPDATE_DATA_DOCUMENT_REFISI_EVO($si_code,$data_update);
 		if($is_ok){
 			$this->session->set_flashdata('pesan','Berhasil!');
-			redirect(base_url('C_notification'),'refresh');
+			redirect(base_url('notification'),'refresh');
 		}else{
 			$this->session->set_flashdata('pesan_gagal','Gagal!');
-			redirect(base_url('C_notification'),'refresh');
+			redirect(base_url('notification'),'refresh');
 		}
 	}
 	public function download_pdf($file)
 	{
-		$this->load->helper('download');
-		$name = $file;
-		$data = file_get_contents('./assets/pdf/'.$file); 
-		force_download($name, $data); 
-		redirect('index','refresh');
+		date_default_timezone_set('Asia/Jakarta');
+		include (APPPATH.'libraries/FPDF/Fpdf.php');
+		include (APPPATH.'libraries/FPDI/fpdi.php');
+		$SESSION_ID = $this->session->userdata('session_bgm_edocument_id');
+		$GLOBALS['nama'] = $SESSION_ID." - ".date('d/m/Y H:i')." WIB";
+		$GLOBALS['document'] = './assets/pdf/'.$file;
+		chmod($GLOBALS['document'], 0777);
+		include (APPPATH.'libraries/watermark_footer.php');
+		$pdf = new Watermark_footer();
+		$pdf->AddPage();
+		$pdf->SetFont('Arial', '', 12);
+		if($pdf->numPages>1) {
+			for($i=2;$i<=$pdf->numPages;$i++) {
+				$pdf->_tplIdx = $pdf->importPage($i);
+				$pdf->AddPage();
+			}
+		}
+		$pdf->Output($file,'D');
+		// $this->load->helper('download');
+		// $name = $file;
+		// $data = file_get_contents('./assets/pdf/'.$file); 
+		// force_download($name, $data); 
+		// redirect('index','refresh');
 	}
 	public function download_ori($file)
 	{
@@ -1731,7 +1868,7 @@ class C_notification extends CI_Controller {
 			echo '
 				<script>
 					alert("Penambahan Data Berhasil");
-					window.location.href = "'.base_url('C_notification').'";
+					window.location.href = "'.base_url('notification').'";
 				</script>
 			';
 			exit();
@@ -1739,7 +1876,49 @@ class C_notification extends CI_Controller {
 			echo '
 				<script>
 					alert("Penambahan Data Gagal, Mohon Cek Kembali");
+					window.location.href = "'.base_url('notification').'";
+				</script>
+			';
+			exit();
+		}
+	}
+	public function reply_comment()
+	{
+		if($_SERVER['REQUEST_METHOD']!="POST"){
+			echo '
+				<script>
+					alert("UNKNOWN COMMAND");
 					window.location.href = "'.base_url('C_notification').'";
+				</script>
+			';
+			exit();
+		}
+
+		date_default_timezone_set('Asia/Jakarta');
+		$date_now 	= date('Y-m-d H:i:s');
+		$si_reff	= $this->M_library_module->GENERATOR_REFF();
+		$dtct_id 	= $this->input->post('dtct_id');
+		$komentar 	= $this->input->post('komentar');
+		$data = array(
+			'DTCR_ID' => $si_reff,
+			'DTCT_ID' => $dtct_id,
+			'DTCR_TIME' => $date_now,
+			'DTCR_NOTE' => $komentar
+		);
+		$is_ok = $this->db->insert('tb_document_comment_reply', $data);
+		if($is_ok){
+			echo '
+				<script>
+					alert("Berhasil Dibalas");
+					window.location.href = "'.base_url('notification').'";
+				</script>
+			';
+			exit();
+		}else{
+			echo '
+				<script>
+					alert("Gagal membalas, Coba lagi");
+					window.location.href = "'.base_url('notification').'";
 				</script>
 			';
 			exit();

@@ -416,7 +416,7 @@ $count_notification = $count_notification + $count_news;
 						<table id="example" class="table table-bordered table-striped table-hovered example">
 							<thead>
 								<tr>
-									<!-- <th></th> -->
+									<th>Kode Dokument</th>
 									<th>Nama Dokumen</th>
 									<th>Pemilik Proses / Dept</th>
 									<th>Tgl Unggah</th>
@@ -430,9 +430,9 @@ $count_notification = $count_notification + $count_news;
 								
 								<?php 
 								date_default_timezone_set('Asia/Jakarta');
-								$DOC_DATE = date('Y-m-d',strtotime($key['DOC_DATE']));
+								$DOC_DATE_EXPIRED = date('Y-m-d',strtotime($key['DOC_TGL_EXPIRED']));
 
-								$tanggal = new DateTime($DOC_DATE);
+								$tanggal = new DateTime($DOC_DATE_EXPIRED);
 								$today = new DateTime('today');
 								$y = $today->diff($tanggal)->y;
 								$m = $today->diff($tanggal)->m;
@@ -440,7 +440,7 @@ $count_notification = $count_notification + $count_news;
 								?>
 								<tbody>
 									<tr>
-										<!-- <th></th> -->
+										<td><?php echo $key['DOC_ID']?></td>
 										<td><?php echo $key['DOC_NAMA']?></td>
 										<td><?php echo $key['DN_NAME']?></td>
 										<td><?php echo $key['DOC_DATE']?></td>

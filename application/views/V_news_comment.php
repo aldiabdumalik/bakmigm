@@ -447,6 +447,9 @@ $count_notification = $count_notification + $count_news;
 																				<th class="pull-left">
 																					Review : <?php echo $data_row->DTCT_NOTE; ?>
 																				</th>
+																				<th>
+<a id="click" href="" data-toggle="modal" data-target="#balas<?= $data_row->DTCT_ID;?>">Balas</a>
+																				</th>
 																			</tr>
 																		</table>
 																	</p>
@@ -457,6 +460,31 @@ $count_notification = $count_notification + $count_news;
 																</div>
 															</div>
 														</div>
+<!-- Modal -->
+<div id="balas<?= $data_row->DTCT_ID;?>" class="modal" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h5 class="blue bigger">Balas Komentar</h5>
+			</div>
+				<div class="modal-body">
+					<p><?=$data_row->DTCT_USER;?> : <?=$data_row->DTCT_NOTE;?></p>
+					<form method="POST" action="<?= base_url('C_notification/reply_comment'); ?>">
+						<input type="hidden" name="dtct_id" value="<?= $data_row->DTCT_ID;?>">
+						<div class="form-group">
+							<label for="komentar">Tulis Balasan Komentar</label><br/>
+							<textarea name="komentar" id="komentar" rows="3" class="form-control" style="resize:none;"></textarea>
+						</div>
+						<input type="submit" class="btn btn-sm btn-primary" value="Balas">
+					</form>
+				</div>
+			<div class="modal-footer">
+				
+			</div>
+		</div>
+	</div>
+</div>
 												<?php
 														}
 													}

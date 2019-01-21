@@ -36,6 +36,25 @@ class M_library_database extends CI_Model {
 	private $tb_document_versioning			= "tb_document_versioning";
 	private $tb_document_bookmark			= "tb_document_bookmark";
 
+	public function GET_COMMENT($DOC_ID)
+	{
+		$result = "";
+		try {
+			$this->db->select('*');
+			$this->db->from('tb_document_comment');
+			$this->db->join('tb_document', 'tb_document_comment.DOC_ID = tb_document.DOC_ID', 'left');
+			$this->db->where('tb_document_comment.DOC_ID', $DOC_ID);
+			$query = $this->db->get();
+			if ($query->num_rows() > 0) {
+				return $query->result();
+			}
+		} catch (Exception $exc) {
+			$error = $exc->getMessage();
+			echo "[ERROR][M_LIBRARY_REPORT][GET_COMENTAR]".$error;
+		}
+		return $result;
+	}
+
 	public function get_nomor($si_header_no)
 	{
 		$this->db->where('DOC_NOMOR' , $si_header_no);
@@ -45,6 +64,105 @@ class M_library_database extends CI_Model {
 		}else{
 			return false;
 		}
+	}
+	public function GET_DOC_PENGGUNA($SESSION_DEPARTEMENT_ID,$SESSION_JOB_LEVEL_ID){
+		$result = "";
+		try {
+			$this->db->select('*');
+			$this->db->from('tb_document');
+			$this->db->join('tb_document_detail', 'tb_document.DOC_ID = tb_document_detail.DOC_ID', 'left');
+			$this->db->join('tb_departemen', 'tb_departemen.DN_ID = tb_document.DOC_PEMILIK_PROSES', 'left');
+			$this->db->join('tb_document_structure_tipe', 'tb_document_structure_tipe.DTSETE_ID = tb_document.DOC_TIPE', 'left');
+			$this->db->where('tb_document.DOC_STATUS', 'DIPUBLIKASI');
+			$this->db->like('tb_document.DOC_AKSES_LEVEL', $SESSION_JOB_LEVEL_ID, 'BOTH');
+			$this->db->like('tb_document.DOC_PENGGUNA', $SESSION_DEPARTEMENT_ID, 'BOTH');
+			$query = $this->db->get();
+			if ($query->num_rows()>0) {
+				return $query->result();
+			}
+		} catch (Exception $exc) {
+			$error = $exc->getMessage();
+			echo "[ERROR][M_LIBRARY_DATABASE][GET_DOC_PENGGUNA]".$error;
+		}
+		return $result;
+	}
+	public function GET_DOC_PENCIPTA($SESSION_DEPARTEMENT_ID,$SESSION_JOB_LEVEL_ID){
+		$result = "";
+		try {
+			$this->db->select('*');
+			$this->db->from('tb_document');
+			$this->db->join('tb_document_detail', 'tb_document.DOC_ID = tb_document_detail.DOC_ID', 'left');
+			$this->db->join('tb_departemen', 'tb_departemen.DN_ID = tb_document.DOC_PEMILIK_PROSES', 'left');
+			$this->db->join('tb_document_structure_tipe', 'tb_document_structure_tipe.DTSETE_ID = tb_document.DOC_TIPE', 'left');
+			$this->db->where('tb_document.DOC_STATUS', 'DIPUBLIKASI');
+			$this->db->like('tb_document.DOC_AKSES_LEVEL', $SESSION_JOB_LEVEL_ID, 'BOTH');
+			$this->db->like('tb_document.DOC_PENGGUNA', $SESSION_DEPARTEMENT_ID, 'BOTH');
+			$query = $this->db->get();
+			if ($query->num_rows()>0) {
+				return $query->result_array();
+			}
+		} catch (Exception $exc) {
+			$error = $exc->getMessage();
+			echo "[ERROR][M_LIBRARY_DATABASE][GET_DOC_PENCIPTA]".$error;
+		}
+		return $result;
+	}
+	public function GET_DOC_ARCHIVED($SESSION_ID)
+	{
+		$result = "";
+		$where = "tb_document.DOC_STATUS = 'DIPUBLIKASI' OR tb_document.DOC_STATUS = 'DIARSIPKAN' ";
+		try {
+			$this->db->select('*');
+			$this->db->from('tb_document');
+			$this->db->join('tb_document_detail', 'tb_document.DOC_ID = tb_document_detail.DOC_ID', 'left');
+			$this->db->join('tb_departemen', 'tb_departemen.DN_ID = tb_document.DOC_PEMILIK_PROSES', 'left');
+			$this->db->join('tb_document_structure_tipe', 'tb_document_structure_tipe.DTSETE_ID = tb_document.DOC_TIPE', 'left');
+			$this->db->where($where);
+			$query = $this->db->get();
+			if ($query->num_rows()>0) {
+				return $query->result();
+			}
+		} catch (Exception $exc) {
+			$error = $exc->getMessage();
+			echo "[ERROR][M_LIBRARY_DATABASE][GET_DOC_ARCHIVED]".$error;
+		}
+		return $result;
+	}
+	public function GET_COMMENT_BY_PENGGUNA($DOC_ID,$SESSION_ID)
+	{
+		$result = "";
+		try {
+			$this->db->select('*');
+			$this->db->from('tb_document_comment');
+			$this->db->join('tb_document_comment_reply', 'tb_document_comment.DTCT_ID = tb_document_comment_reply.DTCT_ID', 'left');
+			$this->db->where('tb_document_comment.DOC_ID', $DOC_ID);
+			$this->db->where('tb_document_comment.DTCT_USER', $SESSION_ID);
+			$query = $this->db->get();
+			if ($query->num_rows() > 0) {
+				return $query->result();
+			}
+		} catch (Exception $exc) {
+			$error = $exc->getMessage();
+			echo "[ERROR][M_LIBRARY_DATABASE][GET_COMMENT_BY_PENGGUNA]".$error;
+		}
+		return $result;
+	}
+	public function GET_COMMENT_BY_PENCIPTA($DOC_ID)
+	{
+		$result = "";
+		try {
+			$this->db->select('*');
+			$this->db->from('tb_document_comment');
+			$this->db->where('DOC_ID', $DOC_ID);
+			$query = $this->db->get();
+			if ($query->num_rows() > 0) {
+				return $query->result();
+			}
+		} catch (Exception $exc) {
+			$error = $exc->getMessage();
+			echo "[ERROR][M_LIBRARY_DATABASE][GET_COMMENT_BY_PENCIPTA]".$error;
+		}
+		return $result;
 	}
 	public function getTerkait($DOC_TERKAIT)
 	{
@@ -130,6 +248,24 @@ class M_library_database extends CI_Model {
 		} catch (Exception $exc) {
 			$error = $exc->getMessage();
 			echo "[ERROR][M_LIBRARY_DATABASE][getDIVISI]".$error;
+		}
+		return $result;
+	}
+	public function GET_DEPT_DIVISI($si_owner_dept_pendistribusi)
+	{
+		$result = "";
+		try {
+			$this->db->select('*');
+			$this->db->from('tb_departemen');
+			$this->db->join('tb_divisi', 'tb_departemen.DI_ID = tb_divisi.DI_ID', 'left');
+			$this->db->where('tb_departemen.DN_ID', $si_owner_dept_pendistribusi);
+			$query = $this->db->get();
+			if ($query->num_rows() > 0) {
+				return $query->result();
+			}
+		} catch (Exception $exc) {
+			$error = $exc->getMessage();
+			echo "[ERROR][M_LIBRARY_DATABASE][GET_DEPT_DIVISI]".$error;
 		}
 		return $result;
 	}
@@ -787,7 +923,94 @@ class M_library_database extends CI_Model {
 		}
 		return $result;
 	}
+	public function DB_GET_SEARCH_DATA_DOCUMENT_ARRAY_COBA($SESSION_ID){
+		$result = "";
+		try{
+			$query = $this->db->query('
+			SELECT
+			tb_document.DOC_ID,
+			tb_document.DOC_DATE,
+			tb_document.DOC_KATEGORI,
+			tb_document.DOC_JENIS,
+			tb_document.DOC_TIPE,
+			tb_document.DOC_GROUP_PROSES,
+			tb_document.DOC_PROSES,
+			tb_document.DOC_NOMOR,
+			tb_document.DOC_NAMA,
+			tb_document.DOC_WUJUD,
+			tb_document.DOC_DISTRIBUSI,
+			tb_document.DOC_KERAHASIAAN,
+			tb_document.DOC_AKSES_LEVEL,
+			tb_document.DOC_PENGGUNA,
+			tb_document.DOC_PEMILIK_PROSES,
+			tb_document.DOC_PENYIMPAN,
+			tb_document.DOC_PENDISTRIBUSI,
+			tb_document.DOC_VERSI,
+			tb_document.DOC_TGL_EFEKTIF,
+			tb_document.DOC_PERIODE_PREVIEW,
+			tb_document.DOC_TGL_EXPIRED,
+			tb_document.DOC_KATA_KUNCI,
+			tb_document.DOC_ABSTRAK,
+			tb_document.DOC_TERKAIT,
+			tb_document.DOC_MAKER,
+			tb_document.DOC_APPROVE,
+			tb_document.DOC_STATUS,
+			tb_document.DOC_STATUS_ACTIVITY,
+			tb_document.DOC_NOTE,
+			tb_document_structure_kategori.DTSEKI_KATEGORI,
+			tb_document_structure_jenis.DTSEJS_JENIS,
+			tb_document_structure_tipe.DTSETE_TIPE,
+			tb_document_structure_tipe.DTSETE_SINGKATAN,
+			tb_document_form.DTFM_NAME,
+			tb_distribution_method.DNMD_NAME,
+			tb_confidential.CL_NAME,
+			tb_user.DN_ID,
+			tb_departemen.DN_CODE,
+			tb_departemen.DN_NAME,
+			tb_divisi.DI_CODE,
+			tb_divisi.DI_NAME,
+			tb_direktorat.DT_NAME
+			FROM
+			tb_document
+			INNER JOIN tb_document_structure_kategori ON tb_document_structure_kategori.DTSEKI_ID = tb_document.DOC_KATEGORI
+			INNER JOIN tb_document_structure_jenis ON tb_document_structure_jenis.DTSEJS_ID = tb_document.DOC_JENIS
+			INNER JOIN tb_document_structure_tipe ON tb_document_structure_tipe.DTSETE_ID = tb_document.DOC_TIPE
+			INNER JOIN tb_document_form ON tb_document_form.DTFM_ID = tb_document.DOC_WUJUD
+			INNER JOIN tb_distribution_method ON tb_distribution_method.DNMD_ID = tb_document.DOC_DISTRIBUSI
+			INNER JOIN tb_confidential ON tb_confidential.CL_ID = tb_document.DOC_KERAHASIAAN
+			INNER JOIN tb_user ON tb_document.DOC_MAKER = tb_user.UR_ID
+			INNER JOIN tb_departemen ON tb_user.DN_ID = tb_departemen.DN_ID
+			INNER JOIN tb_divisi ON tb_departemen.DI_ID = tb_divisi.DI_ID
+			INNER JOIN tb_direktorat ON tb_divisi.DT_ID = tb_direktorat.DT_ID
+			WHERE tb_document.DOC_MAKER = "'.$SESSION_ID.'" ');
+			if ($query->num_rows() > 0) {
+				return $query->result();
+			}
+		}catch(Exception $exc){
+			$error = $exc->getMessage();
+			echo "[ERROR][M_LIBRARY_DATABASE][DB_GET_SEARCH_DATA_DOCUMENT_ARRAY_COBA]".$error;
+		}
+		return $result;
+	}
 	//-----------------------------------------------------------------------------------------------//
+	public function DB_GET_DOCUMENT()
+	{
+		$where = "DOC_STATUS='DIPUBLIKASI' OR DOC_STATUS='KADALUARSA' OR DOC_STATUS='DIARSIPKAN'";
+		$result = "";
+		try {
+			$this->db->select('*');
+			$this->db->from('tb_document');
+			$this->db->where($where);
+			$query = $this->db->get();
+			if ($query->num_rows() > 0) {
+				return $query->result();
+			}
+		} catch (Exception $exc) {
+			$error = $exc->getMessage();
+			echo "[ERROR][M_LIBRARY_DATABASE][DB_GET_DOCUMENT]".$error;
+		}
+		return $result;
+	}
 	public function DB_GET_SEARCH_DATA_DOCUMENT_ARRAY2($DOC_ID,$DOC_NOMOR,$DOC_NAMA,$DOC_MAKER,$DOC_APPROVE,$DOC_STATUS){
 		$result = "";
 		try{
@@ -1332,11 +1555,12 @@ class M_library_database extends CI_Model {
 		return $status;
 	}
 	//-----------------------------------------------------------------------------------------------//
-	public function DB_GET_DATA_DOCUMENT_TEMPLATE_EVO(){
+	public function DB_GET_DATA_DOCUMENT_TEMPLATE_EVO($SESSION_ID){
 		$result = "";
 		try{
 			$this->db->select('*');
 			$this->db->from($this->tb_document_template);
+			$this->db->where('UR_ID', $SESSION_ID);
 			$query = $this->db->get();
 			if ($query->num_rows() > 0) {
 				return $query->result();

@@ -132,4 +132,4 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array('M_library_database','M_library_module');
+$autoload['model'] = array('M_library_database','M_library_module','M_library_report');

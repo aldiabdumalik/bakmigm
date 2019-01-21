@@ -11,10 +11,11 @@
     ?>
     <tr>
       <td><?php echo $v['NIP'];?></td>
-      <td><?php echo $v['USER_ID'];?></td>
+      <td><?php echo $v['JOBTITLE'];?></td>
       <td><?php echo $v['USER_NAME'];?></td>
       <td><?php echo $v['FULL_NAME'];?></td> 
     </tr>
     <?php } ?>
   </table>
 </div>
+

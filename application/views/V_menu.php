@@ -138,7 +138,7 @@ $count_notification = $count_notification + $count_news;
 <body class="no-skin">
 	<!------------------------------------------------------------------------------------------------->
 	<!-- CONTENT -->
-	<div id="navbar" class="navbar navbar-default ace-save-state">
+	<div id="navbar" class="navbar navbar-default ace-save-state navbar-fixed-top">
 		<div class="navbar-container ace-save-state" id="navbar-container">
 			<button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
 				<span class="sr-only">Toggle sidebar</span>
@@ -166,7 +166,7 @@ $count_notification = $count_notification + $count_news;
 			try{ace.settings.loadState('main-container')}catch(e){}
 		</script>
 
-		<div id="sidebar" class="sidebar responsive ace-save-state">
+		<div id="sidebar" class="sidebar responsive ace-save-state sidebar-fixed">
 			<script type="text/javascript">
 				try{ace.settings.loadState('sidebar')}catch(e){}
 			</script>
@@ -340,7 +340,7 @@ $count_notification = $count_notification + $count_news;
 										<span class="input-group-addon">
 											<i class="ace-icon fa fa-check"></i>
 										</span>
-										<input type="text" id="keyword" name="keyword" class="form-control" placeholder="Search (Write A Keyword)" />
+										<input type="text" id="keyword" name="keyword" class="form-control" placeholder="Search (Write A Keyword)" value="<?= set_value('keyword') ?>" />
 										<span class="input-group-btn">
 											<button type="submit" id="search" name="cari" class="btn btn-purple btn-sm">
 												<span class="ace-icon fa fa-search icon-on-right bigger-110"></span>
@@ -429,7 +429,7 @@ $count_notification = $count_notification + $count_news;
 						<table id="example" class="table table-bordered table-striped table-hovered example">
 							<thead>
 								<tr>
-									<!-- <th>Kode Dokumen</th> -->
+									<th>Kode Dokumen</th>
 									<th>Nama Dokumen</th>
 									<th>Pemilik Proses / Dept</th>
 									<th>Tgl Upload</th>
@@ -443,9 +443,9 @@ $count_notification = $count_notification + $count_news;
 								
 								<?php 
 								date_default_timezone_set('Asia/Jakarta');
-								$DOC_DATE = date('Y-m-d',strtotime($key['DOC_DATE']));
+								$DOC_DATE_EXPIRED = date('Y-m-d',strtotime($key['DOC_TGL_EXPIRED']));
 
-								$tanggal = new DateTime($DOC_DATE);
+								$tanggal = new DateTime($DOC_DATE_EXPIRED);
 								$today = new DateTime('today');
 								$y = $today->diff($tanggal)->y;
 								$m = $today->diff($tanggal)->m;
@@ -453,10 +453,10 @@ $count_notification = $count_notification + $count_news;
 								?>
 								<tbody>
 									<tr>
-										<!-- <td><?php echo $key['DOC_ID']?></td> -->
+										<td><?php echo $key['DOC_ID']?></td>
 										<td><?php echo $key['DOC_NAMA']?></td>
 										<td><?php echo $key['DN_NAME']?></td>
-										<td><?php echo date('d/m/Y G:s',strtotime($key['DOC_DATE']))?></td>
+										<td><?php echo date('d/m/Y',strtotime($key['DOC_DATE']))?></td>
 										<td><?php echo $key['DOC_STATUS']?></td>
 										<td><?php echo "" . $y . " tahun " . $m . " bulan " . $d . " hari";?></td>
 										<td>

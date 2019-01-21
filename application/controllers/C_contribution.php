@@ -5,7 +5,7 @@ class C_contribution extends CI_Controller {
         parent::__construct();
 		
 		if($this->session->userdata('session_bgm_edocument_status') != "LOGIN"){
-			redirect(base_url("C_index"));
+			redirect(base_url());
 		}
     }
 	public function index(){
@@ -99,15 +99,24 @@ class C_contribution extends CI_Controller {
 
 		// Ambil Pendistribusi
 		if ($si_owner_dept_pendistribusi==$SESSION_DEPARTEMENT_ID) {
-			$getPendistribusi = $this->M_library_database->getDEPARTEMEN($si_owner_dept_pendistribusi);
+			// $getPendistribusi = $this->M_library_database->getDEPARTEMEN($si_owner_dept_pendistribusi);
+			// foreach ($getPendistribusi as $data) {
+			// 	$dpt 		= $data->DN_ID;
+			// 	$dpt_code 	= $data->DN_CODE;
+			// 	$dpt_name 	= $data->DN_NAME;
+			// }
+			// $PENDISTRIBUSI_FINAL_CODE 	= $dpt_code;
+			// $PENDISTRIBUSI_FINAL_NAME 	= $dpt_name;
+			// $STATUS_FINAL				= "MENUNGGU PENDISTRIBUSI";
+			$getPendistribusi = $this->M_library_database->GET_DEPT_DIVISI($si_owner_dept_pendistribusi);
 			foreach ($getPendistribusi as $data) {
-				$dpt 		= $data->DN_ID;
-				$dpt_code 	= $data->DN_CODE;
-				$dpt_name 	= $data->DN_NAME;
+				$dv 		= $data->DI_ID;
+				$dv_code	= $data->DI_CODE;
+				$dv_name	= $data->DI_NAME;
 			}
-			$PENDISTRIBUSI_FINAL_CODE 	= $dpt_code;
-			$PENDISTRIBUSI_FINAL_NAME 	= $dpt_name;
-			$STATUS_FINAL				= "MENUNGGU PENDISTRIBUSI";
+			$PENDISTRIBUSI_FINAL_CODE 	= $dv_code;
+			$PENDISTRIBUSI_FINAL_NAME 	= $dv_name;
+			$STATUS_FINAL				= "MENUNGGU ATASAN PENCIPTA";
 		}elseif ($si_owner_dept_pendistribusi==$SESSION_DIVISI_ID) {
 			$getPendistribusi = $this->M_library_database->getDIVISI($si_owner_dept_pendistribusi);
 			foreach ($getPendistribusi as $data) {
@@ -259,17 +268,15 @@ class C_contribution extends CI_Controller {
 				if ($dokumen_utama_extention == 'doc' || $dokumen_utama_extention == 'docx' || $dokumen_utama_extention == 'xls' || $dokumen_utama_extention == 'xlsx' || $dokumen_utama_extention == 'ppt' || $dokumen_utama_extention == 'pptx' || $dokumen_utama_extention == 'vsd' || $dokumen_utama_extention == 'vsdx' || $dokumen_utama_extention == 'pdf') {
 					// Converter
 					shell_exec('export HOME=/tmp && libreoffice --headless --convert-to pdf --outdir assets/pdf assets/original/'.$file1);
+					if ($dokumen_utama_extention=='pdf') {
+						copy('./assets/original/'.$file1, './assets/pdf/'.$file1);
+					}
 					$dokumen_search_acr = "";
 					$txt1 = new PdfToText(base_url('assets/pdf/'.$file1Name.'.pdf'));
 					$dokumen_search_acr = $txt1->Text;
 					// Watermark Pdf
-					if ($dokumen_utama_extention != 'pdf') {
-						$GLOBALS['dokumen_utama'] = './assets/pdf/'.$file1Name.'.pdf';
-						chmod($GLOBALS['dokumen_utama'], 0777);
-					}else{
-						$GLOBALS['dokumen_utama'] = './assets/original/'.$file1Name.'.pdf';
-						chmod($GLOBALS['dokumen_utama'], 0777);
-					}
+					$GLOBALS['dokumen_utama'] = './assets/pdf/'.$file1Name.'.pdf';
+					chmod($GLOBALS['dokumen_utama'], 0777);
 					include (APPPATH.'libraries/watermark_utama.php');
 					$pdf = new Watermark_utama();
 					$pdf->AddPage();
@@ -286,7 +293,9 @@ class C_contribution extends CI_Controller {
 				}
 				
 				$dokumen_utama_name = $file1Name;
-				if (isset($dokumen_utama_on)) {
+				if ($dokumen_utama_extention=='pdf') {
+					$convert_dokumen_utama = 1;
+				}elseif (isset($dokumen_utama_on)) {
 					$convert_dokumen_utama = 1;
 				}else{
 					$convert_dokumen_utama = 0;
@@ -309,14 +318,12 @@ class C_contribution extends CI_Controller {
 					$file2Name = $this->upload->data('raw_name');
 					if ($dokumen_pelengkap_1_extention == 'doc' || $dokumen_pelengkap_1_extention == 'docx' || $dokumen_pelengkap_1_extention == 'xls' || $dokumen_pelengkap_1_extention == 'xlsx' || $dokumen_pelengkap_1_extention == 'ppt' || $dokumen_pelengkap_1_extention == 'pptx' || $dokumen_pelengkap_1_extention == 'vsd' || $dokumen_pelengkap_1_extention == 'vsdx' || $dokumen_pelengkap_1_extention == 'pdf') {
 						shell_exec('export HOME=/tmp && libreoffice --headless -convert-to pdf --outdir assets/pdf assets/original/'.$file2);
-						// Watermark Pdf
-						if ($dokumen_pelengkap_1_extention != 'pdf') {
-							$GLOBALS['dokumen_pelengkap_1'] = './assets/pdf/'.$file2Name.'.pdf';
-							chmod($GLOBALS['dokumen_pelengkap_1'], 0777);
-						}else{
-							$GLOBALS['dokumen_pelengkap_1'] = './assets/original/'.$file2Name.'.pdf';
-							chmod($GLOBALS['dokumen_pelengkap_1'], 0777);
+						if ($dokumen_pelengkap_1_extention=='pdf') {
+							copy('./assets/original/'.$file2, './assets/pdf/'.$file2);
 						}
+						// Watermark Pdf
+						$GLOBALS['dokumen_pelengkap_1'] = './assets/pdf/'.$file2Name.'.pdf';
+						chmod($GLOBALS['dokumen_pelengkap_1'], 0777);
 						include (APPPATH.'libraries/watermark_p1.php');
 						$pdf = new Watermark_p1();
 						$pdf->AddPage();
@@ -330,7 +337,9 @@ class C_contribution extends CI_Controller {
 						$pdf->Output($GLOBALS['dokumen_pelengkap_1'],'F');
 					}
 					$dokumen_pelengkap_1_name = $file2Name;
-					if (isset($dokumen_pelengkap_1_on)) {
+					if ($dokumen_pelengkap_1_extention=='pdf') {
+						$convert_dokumen_pelengkap_1 = 1;
+					}elseif (isset($dokumen_pelengkap_1_on)) {
 						$convert_dokumen_pelengkap_1 = 1;
 					}else{
 						$convert_dokumen_pelengkap_1 = 0;
@@ -359,14 +368,12 @@ class C_contribution extends CI_Controller {
 					$file3Name = $this->upload->data('raw_name');
 					if ($dokumen_pelengkap_2_extention == 'doc' || $dokumen_pelengkap_2_extention == 'docx' || $dokumen_pelengkap_2_extention == 'xls' || $dokumen_pelengkap_2_extention == 'xlsx' || $dokumen_pelengkap_2_extention == 'ppt' || $dokumen_pelengkap_2_extention == 'pptx' || $dokumen_pelengkap_2_extention == 'vsd' || $dokumen_pelengkap_2_extention == 'vsdx' || $dokumen_pelengkap_2_extention == 'pdf') {
 						shell_exec('export HOME=/tmp && libreoffice --headless -convert-to pdf --outdir assets/pdf assets/original/'.$file3);
-						// Watermark Pdf
-						if ($dokumen_pelengkap_2_extention != 'pdf') {
-							$GLOBALS['dokumen_pelengkap_2'] = './assets/pdf/'.$file3Name.'.pdf';
-							chmod($GLOBALS['dokumen_pelengkap_2'], 0777);
-						}else{
-							$GLOBALS['dokumen_pelengkap_2'] = './assets/original/'.$file3Name.'.pdf';
-							chmod($GLOBALS['dokumen_pelengkap_2'], 0777);
+						if ($dokumen_pelengkap_2_extention=='pdf') {
+							copy('./assets/original/'.$file3, './assets/pdf/'.$file3);
 						}
+						// Watermark Pdf
+						$GLOBALS['dokumen_pelengkap_2'] = './assets/pdf/'.$file3Name.'.pdf';
+						chmod($GLOBALS['dokumen_pelengkap_2'], 0777);
 						include (APPPATH.'libraries/watermark_p2.php');
 						$pdf = new Watermark_p2();
 						$pdf->AddPage();
@@ -381,7 +388,9 @@ class C_contribution extends CI_Controller {
 					}
 					
 					$dokumen_pelengkap_2_name = $file3Name;
-					if (isset($dokumen_pelengkap_2_on)) {
+					if ($dokumen_pelengkap_2_extention=='pdf') {
+						$convert_dokumen_pelengkap_2 = 1;
+					}elseif (isset($dokumen_pelengkap_2_on)) {
 						$convert_dokumen_pelengkap_2 = 1;
 					}else{
 						$convert_dokumen_pelengkap_2 = 0;
@@ -475,10 +484,10 @@ class C_contribution extends CI_Controller {
 		}
 		if($is_ok){
 			$this->session->set_flashdata('pesan','Berhasil!');
-			redirect(base_url('C_contribution'),'refresh');
+			redirect(base_url('notification'),'refresh');
 		}else{
 			$this->session->set_flashdata('pesan_gagal','Gagal!');
-			redirect(base_url('C_contribution'),'refresh');
+			redirect(base_url('notification'),'refresh');
 		}
 	}
 

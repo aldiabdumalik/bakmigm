@@ -57,6 +57,7 @@ $route['search'] 					= 'C_menu/cari';
 $route['advanced-search'] 			= 'C_menu/cari_advance';
 $route['download-(:any).zip']		= 'C_menu/zip/$1';
 $route['document-details-(:any)'] 	= 'C_menu/detail/$1';
+$route['document-(:any)']			= 'C_menu/link/$1';
 // Notification
 $route['notification'] 				= 'C_notification';
 $route['pmd-details'] 				= 'C_notification/detail';
@@ -72,7 +73,7 @@ $route['bookmarks'] 				= 'C_bookmarks';
 $route['contribution'] 				= 'C_contribution';
 // Report
 $route['report'] 					= 'C_report';
-$route['employee'] = 'Employee';
+$route['employee'] = 'C_employee';
 
 $route['404_override'] 				= '';
 $route['translate_uri_dashes'] 		= FALSE;

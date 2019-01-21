@@ -333,7 +333,7 @@ $count_notification = $count_notification + $count_news;
 										<option value="">Pilih</option>
 										<?php
 											$is_continue = true;
-											$get_data_ext = $this->M_library_database->DB_GET_DATA_DOCUMENT_TEMPLATE_EVO();
+											$get_data_ext = $this->M_library_database->DB_GET_DATA_DOCUMENT_TEMPLATE_EVO($SESSION_ID);
 											if(empty($get_data_ext)||$get_data_ext==""){
 												$is_continue = false;
 											}
@@ -448,7 +448,7 @@ $count_notification = $count_notification + $count_news;
 									</div><!-- panel-collapse -->
 								</div><!-- panel-default --><br/>
 								<div class="form-group container">
-									<button class="btn" disabled>Prev</button>
+									<button class="btn btn-info" disabled>Prev</button>
 									<button class="btn btn-warning" id="btn_atr_doc">Next</button>
 								</div>
 							</div><!-- accordion -->
@@ -558,7 +558,7 @@ $count_notification = $count_notification + $count_news;
 								</div>
 							</div>
 							<div class="form-group container">
-								<button class="btn" id="btn_jud_doc_prev">Prev</button>
+								<button class="btn btn-info" id="btn_jud_doc_prev">Prev</button>
 								<button class="btn btn-warning" id="btn_jud_doc">Next</button>
 							</div>
 						</div>
@@ -571,7 +571,7 @@ $count_notification = $count_notification + $count_news;
 						<div class="row container">
 							<div class="form-group row">
 								<label for="duallistbox_akses_level" class="col-sm-3 control-label" style="text-align:left">Akses Level*</label>
-								<div class="col-sm-9">
+								<div class="col-sm-7">
 									<select id="duallistbox_akses_level" multiple="multiple" size="5" name="duallistbox_akses_level[]" />
 									</select>
 								</div>
@@ -579,7 +579,7 @@ $count_notification = $count_notification + $count_news;
 
 							<div class="form-group row">
 								<label for="duallistbox_pengguna_dokumen" class="col-sm-3 control-label" style="text-align:left">Pengguna Dokumen*</label>
-								<div class="col-sm-9">
+								<div class="col-sm-7">
 									<select id="duallistbox_pengguna_dokumen" multiple="multiple" size="5" name="duallistbox_pengguna_dokumen[]" />
 									<?php
 									$is_continue = true;
@@ -642,7 +642,7 @@ $count_notification = $count_notification + $count_news;
 							</div>
 
 							<div class="form-group container">
-								<button class="btn" id="btn_kepemilikan_doc_prev">Prev</button>
+								<button class="btn btn-info" id="btn_kepemilikan_doc_prev">Prev</button>
 								<button class="btn btn-warning" id="btn_kepemilikan_doc">Next</button>
 							</div>
 
@@ -657,7 +657,7 @@ $count_notification = $count_notification + $count_news;
 							<div class="form-group row">
 								<label for="si_history_version" class="col-sm-3 control-label" style="text-align:left">Versi*</label>
 								<div class="col-sm-1">
-									<input type="number" id="si_history_version" name="si_history_version" placeholder="1.0" min="0" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==5) return false;" class="form-control" value="1.0" />
+									<input type="number" id="si_history_version" name="si_history_version" placeholder="1.0" min="0" pattern="/^-?\d+\.?\d*$/-" onKeyPress="if(this.value.length==5) return false;" class="form-control" value="1.0" />
 								</div>
 								<span id="req_versi" class="text-danger hide">Harap Isi Versi Dokumen!</span>
 							</div>
@@ -724,7 +724,7 @@ $count_notification = $count_notification + $count_news;
 							</div>
 
 							<div class="form-group container">
-								<button class="btn" id="btn_sejarah_doc_prev">Prev</button>
+								<button class="btn btn-info" id="btn_sejarah_doc_prev">Prev</button>
 								<button class="btn btn-warning" id="btn_sejarah_doc">Next</button>
 							</div>
 						</div>
@@ -777,7 +777,7 @@ $count_notification = $count_notification + $count_news;
 							</div>
 
 							<div class="form-group container">
-								<button class="btn" id="btn_terkait_doc_prev">Prev</button>
+								<button class="btn btn-info" id="btn_terkait_doc_prev">Prev</button>
 								<button class="btn btn-warning hide" id="btn_terkait_doc">Next</button>
 								<button type="submit" class="btn btn-warning" id="btn_terkait_doc_finish">Finish</button>
 							</div>
@@ -844,7 +844,7 @@ $count_notification = $count_notification + $count_news;
 									</div>
 								</div><br/>
 								<div class="form-group container">
-									<button class="btn" id="btn_unggah_doc_prev">Prev</button>
+									<button class="btn btn-info" id="btn_unggah_doc_prev">Prev</button>
 									<button class="btn btn-warning" id="btn_unggah_doc">Finish</button>
 								</div>
 							</div>
@@ -876,7 +876,7 @@ $count_notification = $count_notification + $count_news;
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn btn-sm" data-dismiss="modal" id="save_template">
+				<button class="btn btn-sm btn-info" data-dismiss="modal" id="save_template">
 				<i class="ace-icon fa fa-save"></i>
 				Save
 				</button>
@@ -1023,6 +1023,12 @@ $count_notification = $count_notification + $count_news;
 				}
 			});
 
+			$('#si_history_version').keydown(function(e) {
+				if(e.keyCode == 189 || e.keyCode == 69) {
+			        return false;
+			    }
+			});
+
 			$('#si_header_no').on('keyup', function(e){
 				var si_header_no = $('#si_header_no').val();
 				if(si_header_no != ''){
@@ -1048,7 +1054,7 @@ $count_notification = $count_notification + $count_news;
 			$('#si_header_distribution').on('change', function() {
 				var optionsText = this.options[this.selectedIndex].value;
 				var kat = $('#si_template_new_kategori').val();
-				if (optionsText == 'EDOC' && kat != 'DTSEKI0004') {
+				if (optionsText == 'EDOC' && kat != 'DTSEKI0004' && kat != 'DTSEKI0001') {
 					$('#btn_terkait_doc').removeClass('hide');
 					$('#btn_terkait_doc_finish').addClass('hide');
 					$('#1').text('1 Of 6');
@@ -1059,7 +1065,7 @@ $count_notification = $count_notification + $count_news;
 					$("#si_owner_dept_penyimpan").append('<option value="7550" selected>BPI</option>');
 					$("#si_owner_dept_pendistribusi").append('<option value="7550" selected>BPI</option>');
 					return false;
-				}else if(optionsText == 'EDOC' && kat == 'DTSEKI0004'){
+				}else if(optionsText == 'EDOC' && kat == 'DTSEKI0004' || kat == 'DTSEKI0001'){
 					$('#1').text('1 Of 6');
 					$('#2').text('2 Of 6');
 					$('#3').text('3 Of 6');
@@ -1088,7 +1094,7 @@ $count_notification = $count_notification + $count_news;
 				var add = $(this).val();
 				$("#req_kategori").addClass('hide');
 				$("#kategori").val(add);
-				if (add=='DTSEKI0004') {
+				if (add=='DTSEKI0004' || add=='DTSEKI0001') {
 					$("#si_owner_dept_penyimpan option[value='7550']").remove();
 					$("#si_owner_dept_pendistribusi option[value='7550']").remove();
 				}else{
@@ -1208,7 +1214,7 @@ $count_notification = $count_notification + $count_news;
 					$("#req_tipe").removeClass('hide');
 					return false;
 				}else{
-					if (kategori == 'DTSEKI0004') {
+					if (kategori == 'DTSEKI0004' || kategori == 'DTSEKI0001') {
 						$("#si_owner_dept_penyimpan option[value='7550']").remove();
 						$("#si_owner_dept_pendistribusi option[value='7550']").remove();
 					}
@@ -1433,23 +1439,30 @@ $count_notification = $count_notification + $count_news;
 						response = $.parseJSON(response);
 						
 						//Remove Options
-						$('#si_template_new_kategori').find('option').remove();					
-						$('#si_template_new_jenis').find('option').remove();	
-						$('#si_template_new_tipe').find('option').remove();
-						$('#si_template_new_group_proses').find('option').remove();
-						$('#si_template_new_proses').find('option').remove();
+						// $('#si_template_new_kategori').find('option').remove();					
+						// $('#si_template_new_jenis').find('option').remove();	
+						// $('#si_template_new_tipe').find('option').remove();
+						// $('#si_template_new_group_proses').find('option').remove();
+						// $('#si_template_new_proses').find('option').remove();
 						
-						$('#si_header_master').find('option').remove();
-						$('#si_header_distribution').find('option').remove();
-						$('#si_header_confidential').find('option').remove();
+						// $('#si_header_master').find('option').remove();
+						// $('#si_header_distribution').find('option').remove();
+						// $('#si_header_confidential').find('option').remove();
 						
 						//Add Options
 						$.each(response,function(index,data){
-							$('#si_template_new_kategori').append('<option value="'+data['DTSEKI_ID']+'">'+data['DTSEKI_KATEGORI']+'</option>');
-							$('#si_template_new_jenis').append('<option value="'+data['DTSEJS_ID']+'">'+data['DTSEJS_JENIS']+'</option>');
-							$('#si_template_new_tipe').append('<option value="'+data['DTSETE_ID']+'">'+data['DTSETE_TIPE']+'</option>');
-							$('#si_template_new_group_proses').append('<option value="'+data['DOCTEMP_GROUP_PROSES']+'">'+data['DOCTEMP_GROUP_PROSES']+'</option>');
-							$('#si_template_new_proses').append('<option value="'+data['DOCTEMP_PROSES']+'">'+data['DOCTEMP_PROSES']+'</option>');
+							$('#si_template_new_kategori').val(data['DTSEKI_ID']);
+							// $('#si_template_new_jenis').val(data['DTSEJS_ID']);
+							$('#si_template_new_jenis').append('<option selected value="'+data['DTSEJS_ID']+'">'+data['DTSEJS_JENIS']+'</option>');
+							$('#si_template_new_tipe').val(data['DTSETE_ID']);
+							$('#si_template_new_group_proses').val(data['DOCTEMP_GROUP_PROSES']);
+							$('#si_template_new_proses').val(data['DOCTEMP_PROSES']);
+							// $('#si_template_new_kategori').append('<option value="'+data['DTSEKI_ID']+'">'+data['DTSEKI_KATEGORI']+'</option>');
+							// $('#si_template_new_jenis').append('<option value="'+data['DTSEJS_ID']+'">'+data['DTSEJS_JENIS']+'</option>');
+							// $('#si_template_new_tipe').append('<option value="'+data['DTSETE_ID']+'">'+data['DTSETE_TIPE']+'</option>');
+							// $('#si_template_new_group_proses').append('<option value="'+data['DOCTEMP_GROUP_PROSES']+'">'+data['DOCTEMP_GROUP_PROSES']+'</option>');
+							// $('#si_template_new_proses').append('<option value="'+data['DOCTEMP_PROSES']+'">'+data['DOCTEMP_PROSES']+'</option>');
+							// Nomor Dokumen
 							var date_now = new Date();
 							var dd = date_now.getDate();
 							var mm = date_now.getMonth();
@@ -1470,9 +1483,14 @@ $count_notification = $count_notification + $count_news;
 							}
 							var tgl = integer_to_roman(h);
 							document.getElementById("si_header_no").value = data['DTSETE_SINGKATAN']+"/"+y+"/"+tgl+"/";
-							$('#si_header_master').append('<option value="'+data['DOC_WUJUD']+'">'+data['DTFM_NAME']+'</option>');
-							$('#si_header_distribution').append('<option value="'+data['DOC_DISTRIBUSI']+'">'+data['DNMD_NAME']+'</option>');
-							$('#si_header_confidential').append('<option value="'+data['DOC_KERAHASIAAN']+'">'+data['CL_NAME']+'</option>');
+
+							// $('#si_header_master').append('<option value="'+data['DOC_WUJUD']+'">'+data['DTFM_NAME']+'</option>');
+							// $('#si_header_distribution').append('<option value="'+data['DOC_DISTRIBUSI']+'">'+data['DNMD_NAME']+'</option>');
+							// $('#si_header_confidential').append('<option value="'+data['DOC_KERAHASIAAN']+'">'+data['CL_NAME']+'</option>');
+							$('#si_header_master').val(data['DOC_WUJUD']);
+							$('#si_header_distribution').val(data['DOC_DISTRIBUSI']);
+							$('#si_header_confidential').val(data['DOC_KERAHASIAAN']);
+
 							if ($('#si_template_new_group_proses').val() == ''){
 								$('#si_template_new_group_proses').find('option').remove();
 								$('#si_template_new_group_proses').append('<option value="">Pilih</option>');
@@ -1483,7 +1501,7 @@ $count_notification = $count_notification + $count_news;
 								$('#si_template_new_proses').append('<option value="">Pilih</option>');
 								$('#si_template_new_proses').append('<option value="PROSES">PROSES</option>');
 							}
-							if($('#si_header_distribution').val() == 'EDOC' && $('#si_template_new_kategori').val() != 'DTSEKI0004') {
+							if($('#si_header_distribution').val() == 'EDOC') {
 								$('#btn_terkait_doc').removeClass('hide');
 								$('#btn_terkait_doc_finish').addClass('hide');
 								$('#1').text('1 Of 6');
@@ -1491,8 +1509,10 @@ $count_notification = $count_notification + $count_news;
 								$('#3').text('3 Of 6');
 								$('#4').text('4 Of 6');
 								$('#5').text('5 Of 6');
-								$("#si_owner_dept_penyimpan").append('<option value="7550" selected>BPI</option>');
-								$("#si_owner_dept_pendistribusi").append('<option value="7550" selected>BPI</option>');
+								if ($('#si_template_new_kategori').val() != 'DTSEKI0001' || $('#si_template_new_kategori').val() != 'DTSEKI0004') {
+									$("#si_owner_dept_penyimpan").append('<option value="7550" selected>BPI</option>');
+									$("#si_owner_dept_pendistribusi").append('<option value="7550" selected>BPI</option>');
+								}
 								return false;
 							}else{
 								$('#1').text('1 Of 5');
@@ -1760,15 +1780,28 @@ $count_notification = $count_notification + $count_news;
 				alert("Mohon Isi Tanggal Efektif Berlaku");
 				document.getElementById("si_history_period").selectedIndex = 0;
 			}else{
-				var tgl_priod = $('#si_history_period').val();
 				var tgl_awal = $('#si_history_date').val();
+				var tgl_priod = $('#si_history_period').val();
 				a = moment(tgl_awal).add(tgl_priod, 'month').calendar();
 				b = moment(a).subtract(1, 'days').calendar();
-				document.getElementById("si_history_date_final").value = b;
-				$("#si_history_date_final").each(function() {    
+				// c = moment(b).format("DD/MM/YYYY");
+				// c = moment(b).format('L');
+				$('si_history_date_final').val(b);
+				// $('#si_history_keyword').val(a);
+				$('#si_history_date_final').each(function() {    
 					$(this).datepicker('setDate', b);
 				});
 			}
+		});
+		$('.date-picker').datepicker({
+				format: 'mm/dd/yyyy',
+				// format: 'dd/mm/yyyy',
+				autoclose: true,
+				todayHighlight: true
+		})
+		//show datepicker when clicking on the icon
+		.next().on(ace.click_event, function(){
+			$(this).prev().focus();
 		});
 		
 		$('#si_template_new_name_temp').change(function(){
@@ -2149,15 +2182,6 @@ $count_notification = $count_notification + $count_news;
 			
 			//datepicker plugin
 			//link
-			$('.date-picker').datepicker({
-				format: 'mm/dd/yyyy',
-				autoclose: true,
-				todayHighlight: true
-			})
-			//show datepicker when clicking on the icon
-			.next().on(ace.click_event, function(){
-				$(this).prev().focus();
-			});
 			
 			//or change it into a date range picker
 			$('.input-daterange').datepicker({autoclose:true});
@@ -2437,17 +2461,27 @@ $count_notification = $count_notification + $count_news;
 			//------------------------------------------------------------------------------------------------//
 			//------------------------------------------------------------------------------------------------//
 			//------------------------------------------------------------------------------------------------//
-			var demo1 = $('select[name="duallistbox_akses_level[]"]').bootstrapDualListbox({infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'});
+			var demo1 = $('select[name="duallistbox_akses_level[]"]').bootstrapDualListbox({
+				// infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'
+				showFilterInputs: false
+			});
 			var container1 = demo1.bootstrapDualListbox('getContainer');
-			container1.find('.btn').addClass('btn-white btn-info btn-bold');
+			container1.find('.btn').addClass('btn-white btn-info btn-bold').html('All');
 
-			var demo2 = $('select[name="duallistbox_pengguna_dokumen[]"]').bootstrapDualListbox({infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'});
+			var demo2 = $('select[name="duallistbox_pengguna_dokumen[]"]').bootstrapDualListbox({
+				infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>',
+				moveOnSelect: false
+			});
 			var container2 = demo2.bootstrapDualListbox('getContainer');
 			container2.find('.btn').addClass('btn-white btn-info btn-bold');
+			container2.find('.move').html('Move');
+			container2.find('.remove').html('Remove');
+			container2.find('.moveall').html('All');
+			container2.find('.removeall').html('All');
 
 			var demo3 = $('select[name="duallistbox_dept_pendistribusi[]"]').bootstrapDualListbox({infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'});
 			var container3 = demo3.bootstrapDualListbox('getContainer');
-			container3.find('.btn').addClass('btn-white btn-info btn-bold');
+			container3.find('.btn').addClass('btn-white btn-info btn-bold').html('All');;
 			
 			var demo4 = $('select[name="duallistbox_dokumen_terkait[]"]').bootstrapDualListbox({infoTextFiltered: '<span class="label label-purple label-lg">Filtered</span>'});
 			var container4 = demo4.bootstrapDualListbox('getContainer');
